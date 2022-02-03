@@ -26,7 +26,7 @@ const networkError = {
 
 export default async function fetcher<T = any>(endpoint: string, options: RequestInit): Promise<[ApiError | null, T | null]> {
   const { apiUrl } = config
-  const [netErr, response] = await _.tryit<Response>(fetch)(`${apiUrl}${endpoint}`, {
+  const [netErr, response] = await _.tryit<any>(fetch)(`${apiUrl}${endpoint}`, {
     ...options,
     method: 'POST',
     headers: {

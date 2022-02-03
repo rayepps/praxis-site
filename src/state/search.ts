@@ -39,7 +39,7 @@ export const queryState = selector<t.SearchQuery>({
         set(searchState, _.shake({
             ...get(searchState),
             ...filters
-        }))
+        }) as any)
     }
 })
 
@@ -52,6 +52,6 @@ export const currentEventState = selector<string | undefined>({
         set(searchState, _.shake({
             ...get(searchState),
             eventId
-        }))
+        }) as any)
     }
 })

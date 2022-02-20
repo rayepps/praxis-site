@@ -1,10 +1,4 @@
-import {
-  majorScale,
-  Pane,
-  Text
-} from 'evergreen-ui'
-import Breakpoint from 'src/components/ui/Breakpoint'
-
+import { majorScale, Pane, Text } from 'evergreen-ui'
 
 interface Stat {
   value: number
@@ -23,7 +17,7 @@ const GridWrapper = ({
   return (
     <Pane
       className={className}
-      display='grid'
+      display="grid"
       gridTemplateColumns={`repeat(${columns}, 1fr)`}
       columnGap={majorScale(4)}
       rowGap={majorScale(4)}
@@ -35,26 +29,18 @@ const GridWrapper = ({
   )
 }
 
-export default function StatsBlocks({
-  stats
-}: {
-  stats: Stat[]
-}) {
+export default function StatsBlocks({ stats }: { stats: Stat[] }) {
   const blocks = (
     <>
-      {stats.map((stat) => (
+      {stats.map(stat => (
         <Pane
           key={`${stat.value}_${stat.label}`}
-          display='flex'
-          flexDirection='column'
-          alignItems='center'
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
           marginBottom={majorScale(4)}
         >
-          <Text
-            fontSize={40}
-            fontWeight={900}
-            marginBottom={majorScale(2)}
-          >
+          <Text fontSize={40} fontWeight={900} marginBottom={majorScale(2)}>
             {stat.value}+
           </Text>
           <Text size={600}>{stat.label}</Text>
@@ -62,23 +48,5 @@ export default function StatsBlocks({
       ))}
     </>
   )
-  return (
-    <>
-      <Breakpoint xsmall>
-        <GridWrapper columns={1}>
-          {blocks}
-        </GridWrapper>
-      </Breakpoint>
-      <Breakpoint small>
-        <GridWrapper columns={2}>
-          {blocks}
-        </GridWrapper>
-      </Breakpoint>
-      <Breakpoint medium up>
-        <GridWrapper columns={4}>
-          {blocks}
-        </GridWrapper>
-      </Breakpoint>
-    </>
-  )
+  return <GridWrapper columns={4}>{blocks}</GridWrapper>
 }

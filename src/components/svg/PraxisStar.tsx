@@ -2,13 +2,16 @@
 
 export default function PraxisStar({
   color = '#181717',
-  height = 50
+  height = 50,
+  className
 }: {
   color?: string
   height?: number
+  className?: string
 }) {
   return (
     <svg
+      className={className}
       height={height}
       viewBox="0 0 2861 2815"
       fill="none"

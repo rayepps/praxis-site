@@ -5,7 +5,6 @@ import {
   Pane
 } from 'evergreen-ui'
 import EventCard from '../EventCard'
-import { useCurrentWidth } from 'react-socks'
 import Skeleton from 'react-loading-skeleton'
 
 
@@ -16,13 +15,11 @@ export default function EventGrid({
   events: t.Event[]
   loading?: boolean
 }) {
-  const width = useCurrentWidth()
-  const columns = Math.round(width / 500)
   return (
     <Pane
       flex={1}
       display='grid'
-      gridTemplateColumns={`repeat(${columns}, 1fr)`}
+      gridTemplateColumns={`repeat(4, 1fr)`}
       columnGap={majorScale(4)}
       rowGap={majorScale(4)}
       paddingTop={majorScale(4)}

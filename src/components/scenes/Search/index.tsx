@@ -11,7 +11,6 @@ import * as t from '../../../types'
 import { useFetch } from '../../../hooks'
 import { queryState } from '../../../state/search'
 import { majorScale } from 'evergreen-ui'
-import { useCurrentBreakpointName } from 'react-socks'
 
 import SearchForm from './SearchForm'
 import EventGrid from './EventGrid'
@@ -65,7 +64,6 @@ export function SearchSceneContent() {
 
   const topOfListRef = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useRecoilState(queryState)
-  const breakpoint = useCurrentBreakpointName()
 
   const searchEventsRequest = useFetch(api.searchEvents)
   const listCompaniesRequest = useFetch(api.listCompanies)
@@ -131,14 +129,10 @@ export function SearchSceneContent() {
   const companies = listCompaniesRequest.data?.companies ?? []
   const tags = listTagsRequest.data?.tags ?? []
 
-  const orientation = breakpoint === 'medium' || breakpoint.includes('large')
-    ? 'split'
-    : 'stack'
-
   return (
     <>
       <EventDetailModal />
-      <Axis $stackOrSplit={orientation}>
+      <Axis split>
         <SearchForm
           filters={query}
           companies={companies}

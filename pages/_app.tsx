@@ -22,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;900&display=swap"
           rel="stylesheet"
         />
+        <script defer data-domain="praxisco.us" src="https://plausible.io/js/plausible.js"></script>
       </Head>
       <Component {...pageProps} />
     </>

@@ -4,7 +4,6 @@ import type { AppProps } from 'next/app'
 import np from 'nprogress'
 
 import 'src/styles/tailwind.css'
-import 'src/styles/reset.css'
 import 'src/styles/index.css'
 import 'src/styles/nprogress.css'
 

@@ -4,18 +4,18 @@ import EventDetailScene from 'src/components/scenes/EventDetail'
 import { useRecoilState } from 'recoil'
 import { currentEventState } from 'src/state/search'
 import { useFetch } from 'src/hooks'
-import * as api from 'src/api'
+import api from 'src/api'
 import * as t from 'src/types'
 
 
 export default function EventDetailModal() {
 
   const [currentEventId, setCurrentEvent] = useRecoilState(currentEventState)
-  const findEvent = useFetch(api.findEvent)
+  const findEvent = useFetch(api.events.findById)
 
   useEffect(() => {
     if (!currentEventId) return
-    findEvent.fetch(currentEventId)
+    findEvent.fetch({ eventId: currentEventId })
   }, [currentEventId])
 
   const closeModal = () => {

@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { currentEventState, searchState } from '../../../state/search'
 import ComplexQueryString from '../../../util/ComplexQueryString'
-import * as api from '../../../api'
+import api from 'src/api'
 import { Stack, Axis } from '../../Layout'
 import * as t from '../../../types'
 import { useFetch } from '../../../hooks'
@@ -64,9 +64,9 @@ export function SearchSceneContent() {
   const topOfListRef = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useRecoilState(queryState)
 
-  const searchEventsRequest = useFetch(api.searchEvents)
-  const listCompaniesRequest = useFetch(api.listCompanies)
-  const listTagsRequest = useFetch(api.listTags)
+  const searchEventsRequest = useFetch(api.events.search)
+  const listCompaniesRequest = useFetch(api.system.listCompanies)
+  const listTagsRequest = useFetch(api.system.listTags)
 
   const setFilters = (newFilters: t.SearchFilters) => setQuery({
     ...query,
@@ -127,6 +127,8 @@ export function SearchSceneContent() {
   const total = searchEventsRequest.data?.total ?? 0
   const companies = listCompaniesRequest.data?.companies ?? []
   const tags = listTagsRequest.data?.tags ?? []
+
+  console.log(events)
 
   return (
     <>

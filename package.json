@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@exobase/client-builder": "^0.0.2",
     "color": "^4.0.1",
     "color-string": "^1.6.0",
     "date-fns": "^2.25.0",

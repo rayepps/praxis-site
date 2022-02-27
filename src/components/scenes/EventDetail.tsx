@@ -5,7 +5,6 @@ import theme from 'src/theme'
 import { Center, Split } from '../Layout'
 import HorizontalGallery from 'src/components/ui/HorizontalGallery'
 import { useFetch } from 'src/hooks'
-import * as api from 'src/api'
 
 export default function EventDetailScene({ event, onClose }: { event: t.Event; onClose?: () => void }) {
   const { training } = event

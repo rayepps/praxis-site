@@ -1,15 +1,4 @@
 import { useEffect } from 'react'
-import {
-  Text,
-  Heading,
-  Pane,
-  Link as EvergreenLink,
-  Paragraph,
-  minorScale,
-  Button,
-  majorScale,
-  Image
-} from 'evergreen-ui'
 import formatDate from 'date-fns/format'
 import * as t from 'src/types'
 import theme from 'src/theme'
@@ -18,15 +7,7 @@ import HorizontalGallery from 'src/components/ui/HorizontalGallery'
 import { useFetch } from 'src/hooks'
 import * as api from 'src/api'
 
-
-export default function EventDetailScene({
-  event,
-  onClose
-}: {
-  event: t.Event
-  onClose?: () => void
-}) {
-
+export default function EventDetailScene({ event, onClose }: { event: t.Event; onClose?: () => void }) {
   const { training } = event
 
   const start = event.startDate ? new Date(event.startDate) : null
@@ -38,49 +19,37 @@ export default function EventDetailScene({
   }
 
   return (
-    <Pane>
-      <Split alignItems='start' marginBottom={majorScale(2)}>
-        <Split flex={1} alignItems='center' marginRight={majorScale(2)}>
-          <Image 
-            src={training.company?.thumbnail?.url} 
-            height={50}
-            width='auto'  
-            borderRadius={4}
-            marginRight={majorScale(2)}
-          />
-          <Pane>
-            <Heading size={800}>{training.name}</Heading>
-            <Pane>
-              <Text fontWeight='bold' color={theme.colors.green.hex()}>{event.city}, {event.state}</Text>
-              <Text marginX={minorScale(2)} color={theme.colors.yellow.hex()}>|</Text>
-              <Text fontWeight='bold' color={theme.colors.green.hex()}>{training.displayPrice}</Text>
-              <Text marginX={minorScale(2)} color={theme.colors.yellow.hex()}>|</Text>
-              <Text fontWeight='bold' color={theme.colors.green.hex()}>{format(start)}</Text>
-            </Pane>
-          </Pane>
+    <div>
+      <Split className="items-start mb-2">
+        <Split className="items-center mr-2 grow">
+          <img src={training.company?.thumbnail?.url} className="h-12 w-auto rounded mr-2" />
+          <div>
+            <h1 className="text-4xl">{training.name}</h1>
+            <div>
+              <span className="font-bold text-green-400">
+                {event.city}, {event.state}
+              </span>
+              <span className="mx-2 text-yellow-300">|</span>
+              <span className="font-bold text-green-400">{training.displayPrice}</span>
+              <span className="mx-2 text-yellow-300">|</span>
+              <span className="font-bold text-green-400">{format(start)}</span>
+            </div>
+          </div>
         </Split>
-        <EvergreenLink
-          href={event.externalLink ?? event.directLink ?? training.company?.externalLink ?? training.company?.directLink}
-          padding={minorScale(2)}
-          backgroundColor={theme.colors.black.hex()}
-          style={{
-            color: theme.colors.white.hex()
-          }}
-          marginRight={minorScale(2)}
+        <a
+          href={
+            event.externalLink ?? event.directLink ?? training.company?.externalLink ?? training.company?.directLink
+          }
+          className="p-2 bg-black text-white mr-2"
         >
           sign up
-        </EvergreenLink>
-        <Button 
-          appearance='minimal'
-          onClick={onClose}
-        >close</Button>
+        </a>
+        <button onClick={onClose}>close</button>
       </Split>
-      <HorizontalGallery
-        images={training.gallery.map(g => g.url)}
-      />
-      <Pane marginTop={majorScale(2)}>
+      <HorizontalGallery images={training.gallery.map(g => g.url)} />
+      <div className="mt-2">
         <div dangerouslySetInnerHTML={{ __html: training.description.html }} />
-      </Pane>
-    </Pane>
+      </div>
+    </div>
   )
 }

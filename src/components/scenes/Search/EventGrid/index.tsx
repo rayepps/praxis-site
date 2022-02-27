@@ -1,9 +1,5 @@
 import _ from 'radash'
 import * as t from 'src/types'
-import {
-  majorScale,
-  Pane
-} from 'evergreen-ui'
 import EventCard from '../EventCard'
 import Skeleton from 'react-loading-skeleton'
 
@@ -16,40 +12,34 @@ export default function EventGrid({
   loading?: boolean
 }) {
   return (
-    <Pane
-      flex={1}
-      display='grid'
-      gridTemplateColumns={`repeat(4, 1fr)`}
-      columnGap={majorScale(4)}
-      rowGap={majorScale(4)}
-      paddingTop={majorScale(4)}
-      paddingBottom={majorScale(4)}
+    <div
+      className="grow grid grid-cols-4 gap-4 py-4"
     >
       {!loading && events.filter(x => !!x.slug).map(event => (
         <EventCard key={event.slug} event={event} />
       ))}
       {loading && [0, 1, 2, 3, 4].map((i) => (
-        <Pane key={i}>
-          <Pane marginBottom={8}>
+        <div key={i}>
+          <div className="pb-8">
             <Skeleton
               width='100%'
               height={170}
             />
-          </Pane>
-          <Pane marginBottom={8}>
+          </div>
+          <div className="pb-8">
             <Skeleton
               width='40%'
               height={24}
             />
-          </Pane>
-          <Pane>
+          </div>
+          <div>
             <Skeleton
               width='67%'
               height={24}
             />
-          </Pane>
-        </Pane>
+          </div>
+        </div>
       ))}
-    </Pane>
+    </div>
   )
 }

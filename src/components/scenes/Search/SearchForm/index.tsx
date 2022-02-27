@@ -8,19 +8,8 @@ import addDays from 'date-fns/addDays'
 import getDate from 'date-fns/getDate'
 import getMonth from 'date-fns/getMonth'
 import getYear from 'date-fns/getYear'
-import {
-  Pane,
-  Heading,
-  Checkbox,
-  SelectMenu,
-  Button,
-  IconButton,
-  RadioGroup,
-  majorScale
-} from 'evergreen-ui'
+import { Checkbox, SelectMenu, IconButton, RadioGroup } from 'evergreen-ui'
 import DatePicker, { DayValue } from 'react-modern-calendar-datepicker'
-
-
 
 export default function SearchForm({
   filters,
@@ -33,18 +22,19 @@ export default function SearchForm({
   companies: t.Company[]
   onFiltersChange: (arg: t.SearchFilters) => void
 }) {
-
   const [from, setFrom] = useState<DayValue | null>(null)
 
-  const setType = (type: t.TrainingType) => onFiltersChange({
-    ...filters,
-    type: type
-  })
+  const setType = (type: t.TrainingType) =>
+    onFiltersChange({
+      ...filters,
+      type: type
+    })
 
-  const clearType = () => onFiltersChange({
-    ...filters,
-    type: undefined
-  })
+  const clearType = () =>
+    onFiltersChange({
+      ...filters,
+      type: undefined
+    })
 
   const updateCompany = (companyId: string) => {
     onFiltersChange({
@@ -118,7 +108,7 @@ export default function SearchForm({
     }
   }
 
-  const updateCustomDateRange = (range: { from: DayValue, to: DayValue }) => {
+  const updateCustomDateRange = (range: { from: DayValue; to: DayValue }) => {
     if (range.from && !range.to) {
       setFrom(range.from)
       return
@@ -132,92 +122,73 @@ export default function SearchForm({
       dates: {
         preset: 'custom',
         startsAfter: new Date(range.from.year, range.from.month, range.from.day).toISOString(),
-        endsBefore: new Date(range.to.year, range.to.month, range.to.day).toISOString(),
+        endsBefore: new Date(range.to.year, range.to.month, range.to.day).toISOString()
       }
     })
   }
 
-  const startsAfter = filters.dates?.startsAfter
-    ? new Date(filters.dates.startsAfter)
-    : new Date()
+  const startsAfter = filters.dates?.startsAfter ? new Date(filters.dates.startsAfter) : new Date()
 
-  const endsBefore = filters.dates?.endsBefore
-    ? new Date(filters.dates.endsBefore)
-    : new Date()
+  const endsBefore = filters.dates?.endsBefore ? new Date(filters.dates.endsBefore) : new Date()
 
   return (
-    <Stack
-      width={300}
-      padding={majorScale(4)}
-    >
+    <Stack className="w-96 p-4">
       {/* TYPE */}
-      <Pane marginBottom={majorScale(2)}>
-        <Heading marginBottom={majorScale(1)}>Type</Heading>
+      <div className="mb-2">
+        <h4 className="mb-1">Type</h4>
         <Checkbox
           label="Tactical"
           checked={filters.type === 'tactical'}
-          onChange={(e) => e.target.checked ? setType('tactical') : clearType()}
+          onChange={e => (e.target.checked ? setType('tactical') : clearType())}
         />
         <Checkbox
           label="Survival"
           checked={filters.type === 'survival'}
-          onChange={(e) => e.target.checked ? setType('survival') : clearType()}
+          onChange={e => (e.target.checked ? setType('survival') : clearType())}
         />
         <Checkbox
           label="Medical"
           checked={filters.type === 'medical'}
-          onChange={(e) => e.target.checked ? setType('medical') : clearType()}
+          onChange={e => (e.target.checked ? setType('medical') : clearType())}
         />
-      </Pane>
+      </div>
       {/* COMPANY */}
-      <Pane marginBottom={majorScale(2)}>
-        <Heading marginBottom={majorScale(1)}>Company</Heading>
+      <div className="mb-2">
+        <h4 className="mb-1">Company</h4>
         <Split>
           <SelectMenu
             title="Company"
             options={companies.map(c => ({ label: c.name, value: c.slug }))}
             selected={filters.company}
             filterPlaceholder="Choose company"
-            onSelect={(item) => updateCompany(item.value as string)}
+            onSelect={item => updateCompany(item.value as string)}
           >
-            <Button
-              flex={1}
-              marginRight={majorScale(1)}
-            >
+            <button className="mr-1 grow">
               {filters.company ? companies.find(c => c.slug === filters.company)?.name : 'Select company'}
-            </Button>
+            </button>
           </SelectMenu>
-          <IconButton
-            disabled={!filters.company}
-            icon={HiX}
-            onClick={clearCompany}
-          />
+          <IconButton disabled={!filters.company} icon={HiX} onClick={clearCompany} />
         </Split>
-      </Pane>
+      </div>
       {/* STATE */}
-      <Pane marginBottom={majorScale(2)}>
-        <Heading marginBottom={majorScale(1)}>State</Heading>
+      <div className="mb-2">
+        <h4 className="mb-1">State</h4>
         <Split>
           <SelectMenu
             title="State"
-            options={Object.keys(US_STATES).map((state) => ({ label: state, value: state }))}
+            options={Object.keys(US_STATES).map(state => ({ label: state, value: state }))}
             selected={filters.state}
             filterPlaceholder="Choose state"
-            onSelect={(item) => updateState(item.value as string)}
+            onSelect={item => updateState(item.value as string)}
           >
-            <Button 
-              flex={1} 
-              marginRight={majorScale(1)}
-            >
-              {filters.state || 'Select state'}
-            </Button>
+            <button className="mr-1 grow">{filters.state || 'Select state'}</button>
           </SelectMenu>
           <IconButton disabled={!filters.state} icon={HiX} onClick={clearState} />
         </Split>
-      </Pane>
+      </div>
       {/* DATES */}
-      <Pane marginBottom={majorScale(2)}>
-        <Heading marginBottom={majorScale(1)}>Dates</Heading>
+      <div className="mb-2">
+        <h4 className="mb-1">Dates</h4>
         <RadioGroup
           value={filters.dates?.preset ?? 'anytime'}
           options={[
@@ -229,7 +200,11 @@ export default function SearchForm({
           onChange={event => handleDateRadio(event.target.value as any)}
         />
         {/* Add hidden/popover date picker */}
-        <Pane visibility={filters.dates?.preset === 'custom' ? 'visible' : 'hidden'}>
+        <div
+          style={{
+            visibility: filters.dates?.preset === 'custom' ? 'visible' : 'hidden'
+          }}
+        >
           <DatePicker
             value={{
               from: from ?? {
@@ -237,45 +212,41 @@ export default function SearchForm({
                 month: getMonth(startsAfter) + 1,
                 day: getDate(startsAfter)
               },
-              to: !from ? {
-                year: getYear(endsBefore),
-                month: getMonth(endsBefore) + 1,
-                day: getDate(endsBefore)
-              } : null
+              to: !from
+                ? {
+                    year: getYear(endsBefore),
+                    month: getMonth(endsBefore) + 1,
+                    day: getDate(endsBefore)
+                  }
+                : null
             }}
             onChange={(args: any) => updateCustomDateRange(args)}
             inputPlaceholder="Select a day range"
             shouldHighlightWeekends
           />
-        </Pane>
-      </Pane>
+        </div>
+      </div>
       {/* TAGS */}
-      <Pane marginBottom={majorScale(2)}>
-        <Heading marginBottom={majorScale(1)}>Tags</Heading>
+      <div className="mb-2">
+        <h4 className="mb-1">Tags</h4>
         <Split>
           <SelectMenu
             title="Tags"
-            options={tags.map((tag) => ({ label: tag.name, value: tag.slug }))}
+            options={tags.map(tag => ({ label: tag.name, value: tag.slug }))}
             selected={filters.tags}
             filterPlaceholder="Choose tags"
-            onSelect={(item) => addTag(item.value as string)}
+            onSelect={item => addTag(item.value as string)}
           >
-            <Button flex={1}>Select tag</Button>
+            <button className="grow">Select tag</button>
           </SelectMenu>
         </Split>
-      </Pane>
-      <Pane>
+      </div>
+      <div>
         {filters.tags?.map(tagSlug => {
           const tag = tags.find(t => t.slug === tagSlug)
-          return tag && (
-            <Checkbox
-              checked
-              label={tag.name}
-              onChange={() => removeTag(tag)}
-            />
-          )
+          return tag && <Checkbox checked label={tag.name} onChange={() => removeTag(tag)} />
         })}
-      </Pane>
+      </div>
     </Stack>
   )
 }

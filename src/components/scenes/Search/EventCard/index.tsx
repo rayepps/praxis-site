@@ -1,39 +1,11 @@
 import * as t from 'src/types'
 import { Stack, Split } from 'src/components/Layout'
 import formatDate from 'date-fns/format'
-import theme from 'src/theme'
-import {
-  Pane,
-  Text,
-  Heading,
-  Tooltip,
-  minorScale,
-  majorScale
-} from 'evergreen-ui'
-import styled from 'styled-components'
-import { currentEventState } from 'src/state/search' 
+import { currentEventState } from 'src/state/search'
 import { useSetRecoilState } from 'recoil'
+import { Tooltip } from 'evergreen-ui'
 
-
-const StyledItem = styled(Pane)`
-  &:hover {
-    cursor: pointer;
-  }
-  .px-event-grid-item-view {
-    opacity: 0;
-    transition: opacity .5s;
-  }
-  &:hover .px-event-grid-item-view {
-    opacity: 1;
-  }
-`
-
-export default function EventCard({
-  event
-}: {
-  event: t.Event
-}) {
-
+export default function EventCard({ event }: { event: t.Event }) {
   const setCurrentEvent = useSetRecoilState(currentEventState)
 
   const start = event.startDate ? new Date(event.startDate) : null
@@ -50,67 +22,37 @@ export default function EventCard({
 
   return (
     <Stack onClick={handleClick}>
-      <StyledItem
-        backgroundImage={`url(${event.training.thumbnail?.url})`}
-        width='100%'
-        height={230}
-        backgroundPosition='center center'
-        backgroundRepeat='no-repeat'
-        backgroundSize='cover'
-        position='relative'
-        borderRadius={4}
+      <div
+        className="rounded relative bg-cover bg-no-repeat bg-center h-56 w-full hover:cursor-pointer"
+        style={{
+          backgroundImage: `url(${event.training.thumbnail?.url})`
+        }}
       >
-        <Pane
-          backgroundColor='rgba(255, 255, 255, 0.8)'
-          position='absolute'
-          top={10}
-          left={10}
-          paddingX={minorScale(2)}
-          paddingY={minorScale(1)}
-          borderRadius={4}
-        >
-          <Text fontWeight='bold'>{event.training.displayPrice}</Text>
-        </Pane>
-        <Pane
-          backgroundColor='rgba(0, 0, 0, 0.8)'
-          position='absolute'
-          top={10}
-          right={10}
-          paddingX={minorScale(2)}
-          paddingY={minorScale(1)}
-          borderRadius={4}
-          className='px-event-grid-item-view'
-        >
-          <Text
-            fontWeight='bold'
-            color={theme.colors.white.hex()}
-          >
-            View
-          </Text>
-        </Pane>
+        <div className="rounded py-1 px-2 left-3 top-3 absolute bg-[rgba(255, 255, 255, 0.8)]">
+          <span className="font-bold">{event.training.displayPrice}</span>
+        </div>
+        <div className="opacity-0 rounded py-1 px-2 right-3 top-3 absolute bg-[rgba(0, 0, 0, 0.8)] transition-opacity">
+          <span className="font-bold text-white">View</span>
+        </div>
         <Tooltip content={event.training.company?.name}>
-          <Pane
-            backgroundImage={`url(${event.training.company?.thumbnail?.url})`}
-            width={40}
-            height={40}
-            backgroundPosition='center center'
-            backgroundRepeat='no-repeat'
-            backgroundSize='cover'
-            position='absolute'
-            bottom={10}
-            right={10}
-            borderRadius={3}
+          <div
+            className="rounded right-3 bottom-3 absolute bg-cover bg-no-repeat bg-center h-10 w-10"
+            style={{
+              backgroundImage: `url(${event.training.company?.thumbnail?.url})`
+            }}
           />
         </Tooltip>
-      </StyledItem>
-      <Pane paddingTop={majorScale(1)}>
+      </div>
+      <div className="pt-1">
         <Split>
-          <Text fontWeight='bold' color={theme.colors.green.hex()}>{format(start)}</Text>
-          <Text marginX={minorScale(2)} color={theme.colors.yellow.hex()}>|</Text>
-          <Text fontWeight='bold' color={theme.colors.green.hex()}>{event.city}, {event.state}</Text>
+          <span className="font-bold text-green-600">{format(start)}</span>
+          <span className="mx-2 text-yellow-600">|</span>
+          <span className="font-bold text-green-600">
+            {event.city}, {event.state}
+          </span>
         </Split>
-        <Heading size={600}>{event.training.name}</Heading>
-      </Pane>
+        <h4 className="text-lg">{event.training.name}</h4>
+      </div>
     </Stack>
   )
 }

@@ -1,4 +1,3 @@
-import { Pane, Heading, Text, Link as EvergreenLink, Image, majorScale } from 'evergreen-ui'
 import Link from 'next/link'
 import { Split, Center } from '../Layout'
 import * as t from 'src/types'
@@ -7,35 +6,33 @@ import theme from 'src/theme'
 export default function TrainingScene({ training }: { training: t.Training }) {
   return (
     <>
-      <Split padding={majorScale(4)}>
+      <Split className="p-4">
         <Split flex={1} alignItems="center">
-          <Image height={50} src={training.company.thumbnail.url} />
-          <Pane marginLeft={majorScale(2)}>
-            <Heading>{training.name}</Heading>
-            <Text>by {training.company.name}</Text>
-          </Pane>
+          <img src={training.company.thumbnail.url} className="h-12" />
+          <div className="ml-2">
+            <h1>{training.name}</h1>
+            <span>by {training.company.name}</span>
+          </div>
         </Split>
-        <Pane>
-          <EvergreenLink
+        <div>
+          <a
             href={training.externalLink ?? training.directLink ?? '/'}
-            style={{
-              color: theme.colors.black.hex()
-            }}
+            className="text-black"
           >
             Sign up at {training.company.name}
-          </EvergreenLink>
-        </Pane>
+          </a>
+        </div>
       </Split>
-      <Split padding={majorScale(4)}>
-        <Pane flex={1} maxWidth={500} minWidth={300} display="flex" flexDirection="column">
+      <Split className="p-4">
+        <div className="grow max-w-lg min-w-[300px] flex flex-col">
           {training.gallery.map(asset => (
-            <Image key={asset.url} src={asset.url} borderRadius={4} marginBottom={majorScale(2)} />
+            <img key={asset.url} src={asset.url} className="rounded mb-2" />
           ))}
-        </Pane>
+        </div>
         {training.description?.html && (
-          <Pane flex={1} marginLeft={majorScale(4)} maxWidth={600}>
+          <div className="grow ml-4 max-w-[600px]">
             <div dangerouslySetInnerHTML={{ __html: training.description.html }} />
-          </Pane>
+          </div>
         )}
       </Split>
     </>

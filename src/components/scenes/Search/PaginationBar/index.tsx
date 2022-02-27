@@ -1,9 +1,5 @@
 import { Center } from 'src/components/Layout'
-import {
-  Pagination,
-  majorScale
-} from 'evergreen-ui'
-
+import { Pagination } from 'evergreen-ui'
 
 export default function PaginationBar({
   total,
@@ -27,9 +23,7 @@ export default function PaginationBar({
     onPageChange(newPage)
   }
   return (
-    <Center
-      paddingY={majorScale(4)}
-    >
+    <Center className="py-4">
       <Pagination
         page={page}
         totalPages={totalPages}

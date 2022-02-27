@@ -10,7 +10,6 @@ import { Stack, Axis } from '../../Layout'
 import * as t from '../../../types'
 import { useFetch } from '../../../hooks'
 import { queryState } from '../../../state/search'
-import { majorScale } from 'evergreen-ui'
 
 import SearchForm from './SearchForm'
 import EventGrid from './EventGrid'
@@ -141,8 +140,7 @@ export function SearchSceneContent() {
         />
         <Stack
           ref={topOfListRef}
-          paddingX={majorScale(4)}
-          flex={1}
+          className="grow px-4"
         >
           <SummaryBar
             total={total}

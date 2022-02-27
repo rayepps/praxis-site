@@ -7,6 +7,7 @@ import 'src/styles/tailwind.css'
 import 'src/styles/index.css'
 import 'src/styles/nprogress.css'
 
+np.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => np.start())
 Router.events.on('routeChangeComplete', () => np.done())
 Router.events.on('routeChangeError', () => np.done())

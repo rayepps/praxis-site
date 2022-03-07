@@ -124,6 +124,7 @@ export interface Event {
     slug: string
     city: string
     state: string
+    images: Asset[]
 }
 
 export interface FeatureTag {

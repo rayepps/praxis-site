@@ -20,12 +20,27 @@ export default function EventCard({ event }: { event: t.Event }) {
     setCurrentEvent(event.id)
   }
 
+  const thumbnailUrl = (() => {
+    if (event.images?.length > 0) {
+      return event.images[0].url
+    }
+    if (event.training.thumbnail) {
+      return event.training.thumbnail.url
+    }
+    if (event.training.company?.thumbnail) {
+      return event.training.company.thumbnail.url
+    }
+    // TODO: Return a default image that won't
+    // error or show blank on UI for best UX
+    return ''
+  })()
+
   return (
     <Stack onClick={handleClick}>
       <div
         className="rounded relative bg-cover bg-no-repeat bg-center h-56 w-full hover:cursor-pointer"
         style={{
-          backgroundImage: `url(${event.training.thumbnail?.url})`
+          backgroundImage: `url(${thumbnailUrl})`
         }}
       >
         <div className="rounded py-1 px-2 left-3 top-3 absolute bg-[rgba(255, 255, 255, 0.8)]">

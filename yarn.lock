@@ -3918,7 +3918,7 @@ quick-lru@^5.1.1:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
-radash@^1.1.0, radash@^1.5.2:
+radash@^1.5.2, radash@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/radash/-/radash-1.7.0.tgz#76c94a07a3093303b38ff050f8717aa38ce9f594"
   integrity sha512-h3KyDJjpYIz7FSUD39Npz72/wK6N/X9sEXh19SfvG/NFSC1fmmq/AFk4D0yJV+rhuSQ3LHMNiioRwq/cscYIMQ==

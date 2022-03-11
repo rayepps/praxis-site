@@ -3,7 +3,7 @@ import { Stack, Split } from 'src/components/Layout'
 import formatDate from 'date-fns/format'
 import { currentEventState } from 'src/state/search'
 import { useSetRecoilState } from 'recoil'
-import { Tooltip } from 'evergreen-ui'
+import { HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineArrowNarrowRight } from 'react-icons/hi'
 
 export default function EventCard({ event }: { event: t.Event }) {
   const setCurrentEvent = useSetRecoilState(currentEventState)
@@ -13,7 +13,7 @@ export default function EventCard({ event }: { event: t.Event }) {
 
   const format = (date: Date | null) => {
     if (!date) return ''
-    return formatDate(date, 'M.d.yyyy')
+    return formatDate(date, 'MMM do')
   }
 
   const handleClick = () => {
@@ -36,38 +36,54 @@ export default function EventCard({ event }: { event: t.Event }) {
   })()
 
   return (
-    <Stack onClick={handleClick}>
+    <Stack className="bg-gray-50 rounded-b" onClick={handleClick}>
       <div
-        className="rounded relative bg-cover bg-no-repeat bg-center h-56 w-full hover:cursor-pointer"
+        className="relative rounded-t bg-cover bg-no-repeat bg-center h-56 w-full hover:cursor-pointer"
         style={{
           backgroundImage: `url(${thumbnailUrl})`
         }}
       >
-        <div className="rounded py-1 px-2 left-3 top-3 absolute bg-[rgba(255, 255, 255, 0.8)]">
+        <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
           <span className="font-bold">{event.training.displayPrice}</span>
         </div>
-        <div className="opacity-0 rounded py-1 px-2 right-3 top-3 absolute bg-[rgba(0, 0, 0, 0.8)] transition-opacity">
-          <span className="font-bold text-white">View</span>
-        </div>
-        <Tooltip content={event.training.company?.name}>
-          <div
-            className="rounded right-3 bottom-3 absolute bg-cover bg-no-repeat bg-center h-10 w-10"
-            style={{
-              backgroundImage: `url(${event.training.company?.thumbnail?.url})`
-            }}
-          />
-        </Tooltip>
       </div>
-      <div className="pt-1">
-        <Split>
-          <span className="font-bold text-green-600">{format(start)}</span>
-          <span className="mx-2 text-yellow-600">|</span>
-          <span className="font-bold text-green-600">
-            {event.city}, {event.state}
-          </span>
+      <Stack className="p-3 grow">
+        <Split className="grow">
+          <div className="grow">
+            <h4 className="text-lg font-bold">{event.training.name}</h4>
+            <span className="text-sm mb-2 text-gray-400 inline-block">{event.training.company.name}</span>
+            <div className="">
+              {event.training.tags.map(tag => (
+                <div key={tag.slug} className="px-2 bg-gray-200 rounded inline-block mr-2 mb-2">
+                  <span className="font-bold text-xs text-slate-500">{tag.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div
+              className="rounded bg-cover bg-no-repeat bg-center h-10 w-10"
+              style={{
+                backgroundImage: `url(${event.training.company?.thumbnail?.url})`
+              }}
+            />
+          </div>
         </Split>
-        <h4 className="text-lg">{event.training.name}</h4>
-      </div>
+        <Split>
+          <div className="grow">
+            <Split className="items-center">
+              <HiOutlineLocationMarker size={16} className="text-slate-400 mr-2" />{' '}
+              <span className="text-slate-400">
+                {event.city}, {event.state}
+              </span>
+            </Split>
+            <Split className="items-center">
+              <HiOutlineCalendar size={16} className="text-slate-400 mr-2" />{' '}
+              <span className="text-slate-400">{format(start)}</span>
+            </Split>
+          </div>
+        </Split>
+      </Stack>
     </Stack>
   )
 }

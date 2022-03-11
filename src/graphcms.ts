@@ -47,6 +47,59 @@ export async function findTraining(slug: string): Promise<t.Training> {
   return response.training
 }
 
+export async function listFeaturedEvents(): Promise<t.Event[]> {
+  const query = gql`
+      query ListFeaturedEvents {
+        featuredEvents {
+          event {
+            id
+            startDate
+            endDate
+            city
+            state
+            directLink
+            externalLink
+            name
+            images {
+              url
+            }
+            training {
+              id
+              slug
+              type
+              name
+              directLink
+              externalLink
+              price
+              displayPrice
+              company {
+                id
+                slug
+                name
+                thumbnail {
+                  url
+                }
+              }
+              gallery {
+                url
+              }
+              tags {
+                id
+                name
+                slug
+              }
+              thumbnail {
+                url
+              }
+            }
+          }
+        }
+      }
+    `
+  const response = await client.request<{ featuredEvents: { event: t.Event }[] }>(query)
+  return response.featuredEvents.map(x => x.event)
+}
+
 export async function listFeaturedTrainings(): Promise<t.Training[]> {
   const query = gql`
       query ListFeaturedTrainings {
@@ -199,5 +252,6 @@ export default {
   listFeaturedTrainings,
   listFeaturedTags,
   findFeaturedTag,
-  findTrainingsWithTag
+  findTrainingsWithTag,
+  listFeaturedEvents
 }

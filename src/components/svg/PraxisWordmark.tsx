@@ -2,18 +2,20 @@
 
 export default function PraxisWordmark({
   color = '#181717',
-  height = 50
+  height = 50,
+  className = ''
 }: {
   color?: string
   height?: number
+  className?: string
 }) {
-  // width="237"
   return (
     <svg 
       height={height}
       viewBox="0 0 237 47" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path 
         d="M0 45.824V0.703999H21.696C26.816 0.703999 30.7627 2.02667 33.536 4.672C36.352 7.27467 37.76 10.88 37.76 15.488C37.76 20.096 36.352 23.7227 33.536 26.368C30.7627 28.9707 26.816 30.272 21.696 30.272H11.776V45.824H0ZM11.776 21.248H19.648C24.256 21.248 26.56 19.328 26.56 15.488C26.56 11.648 24.256 9.728 19.648 9.728H11.776V21.248Z" 

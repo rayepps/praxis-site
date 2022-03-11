@@ -13,20 +13,20 @@ export default function EventGrid({
 }) {
   return (
     <div
-      className="grow grid grid-cols-4 gap-4 py-4"
+      className="grow grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 py-4"
     >
       {!loading && events.filter(x => !!x.slug).map(event => (
         <EventCard key={event.slug} event={event} />
       ))}
       {loading && [0, 1, 2, 3, 4].map((i) => (
         <div key={i}>
-          <div className="pb-8">
+          <div className="pb-2">
             <Skeleton
               width='100%'
               height={170}
             />
           </div>
-          <div className="pb-8">
+          <div className="pb-2">
             <Skeleton
               width='40%'
               height={24}

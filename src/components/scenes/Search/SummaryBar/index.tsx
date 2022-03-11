@@ -1,5 +1,6 @@
 import * as t from 'src/types'
 import { Split } from 'src/components/Layout'
+import { HiOutlineFilter } from 'react-icons/hi'
 
 export default function SummaryBar({
   total,
@@ -7,7 +8,8 @@ export default function SummaryBar({
   pageSize,
   orderBy,
   orderAs,
-  onOrderChange
+  onOrderChange,
+  onToggleFilters
 }: {
   total: number
   pageNumber: number
@@ -15,6 +17,7 @@ export default function SummaryBar({
   orderBy: t.OrderBy
   orderAs: t.OrderAs
   onOrderChange: (orderBy: t.OrderBy, orderAs: t.OrderAs) => void
+  onToggleFilters?: () => void
 }) {
   const onChange = (key: string) => {
     const [by, as] = key.split('-') as [t.OrderBy, t.OrderAs]
@@ -29,15 +32,20 @@ export default function SummaryBar({
   const value = `${orderBy}-${orderAs}`
   const start = (pageNumber - 1) * pageSize
   return (
-    <Split className="pt-4">
+    <div className="pt-4 flex flex-row items-center">
+      <div className="md:hidden">
+        <button className='rounded bg-slate-200 p-2 mr-4' onClick={onToggleFilters}>
+          <HiOutlineFilter size={24} className='text-slate-600' />
+        </button>
+      </div>
       <div className="grow flex items-center">
-        <span className="font-bold mr-2">Results:</span>
+        <span className="font-bold mr-2 hidden md:inline">Results:</span>
         <span>
           {start}-{Math.min(start + pageSize, total)} of {total}
         </span>
       </div>
       <div>
-        <span className="font-bold mr-2">Sort:</span>
+        <span className="font-bold mr-2 hidden md:inline">Sort:</span>
         <select value={value} onChange={e => onChange(e.target.value)}>
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>
@@ -46,6 +54,6 @@ export default function SummaryBar({
           ))}
         </select>
       </div>
-    </Split>
+    </div>
   )
 }

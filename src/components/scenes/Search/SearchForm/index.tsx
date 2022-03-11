@@ -132,10 +132,10 @@ export default function SearchForm({
   const endsBefore = filters.dates?.endsBefore ? new Date(filters.dates.endsBefore) : new Date()
 
   return (
-    <Stack className="w-96 p-4">
+    <Stack className="w-64">
       {/* TYPE */}
-      <div className="mb-2">
-        <h4 className="mb-1">Type</h4>
+      <div className="mb-6">
+        <FilterLabel className="mb-1">Type</FilterLabel>
         <Checkbox
           label="Tactical"
           checked={filters.type === 'tactical'}
@@ -153,8 +153,8 @@ export default function SearchForm({
         />
       </div>
       {/* COMPANY */}
-      <div className="mb-2">
-        <h4 className="mb-1">Company</h4>
+      <div className="mb-6">
+        <FilterLabel className="mb-1">Company</FilterLabel>
         <Split>
           <SelectMenu
             title="Company"
@@ -163,7 +163,7 @@ export default function SearchForm({
             filterPlaceholder="Choose company"
             onSelect={item => updateCompany(item.value as string)}
           >
-            <button className="mr-1 grow">
+            <button className="mr-1 grow border border-black rounded">
               {filters.company ? companies.find(c => c.slug === filters.company)?.name : 'Select company'}
             </button>
           </SelectMenu>
@@ -171,8 +171,8 @@ export default function SearchForm({
         </Split>
       </div>
       {/* STATE */}
-      <div className="mb-2">
-        <h4 className="mb-1">State</h4>
+      <div className="mb-6">
+        <FilterLabel className="mb-1">State</FilterLabel>
         <Split>
           <SelectMenu
             title="State"
@@ -181,14 +181,14 @@ export default function SearchForm({
             filterPlaceholder="Choose state"
             onSelect={item => updateState(item.value as string)}
           >
-            <button className="mr-1 grow">{filters.state || 'Select state'}</button>
+            <button className="mr-1 grow border border-black rounded">{filters.state || 'Select state'}</button>
           </SelectMenu>
           <IconButton disabled={!filters.state} icon={HiX} onClick={clearState} />
         </Split>
       </div>
       {/* DATES */}
-      <div className="mb-2">
-        <h4 className="mb-1">Dates</h4>
+      <div className="mb-6">
+        <FilterLabel className="mb-1">Dates</FilterLabel>
         <RadioGroup
           value={filters.dates?.preset ?? 'anytime'}
           options={[
@@ -227,8 +227,8 @@ export default function SearchForm({
         </div>
       </div>
       {/* TAGS */}
-      <div className="mb-2">
-        <h4 className="mb-1">Tags</h4>
+      <div className="mb-6">
+        <FilterLabel className="mb-1">Tags</FilterLabel>
         <Split>
           <SelectMenu
             title="Tags"
@@ -237,16 +237,47 @@ export default function SearchForm({
             filterPlaceholder="Choose tags"
             onSelect={item => addTag(item.value as string)}
           >
-            <button className="grow">Select tag</button>
+            <button className="mr-1 py-1 grow border border-black rounded">Select tag</button>
           </SelectMenu>
         </Split>
-      </div>
-      <div>
-        {filters.tags?.map(tagSlug => {
-          const tag = tags.find(t => t.slug === tagSlug)
-          return tag && <Checkbox checked label={tag.name} onChange={() => removeTag(tag)} />
-        })}
+        <div>
+          {filters.tags?.map(tagSlug => {
+            const tag = tags.find(t => t.slug === tagSlug)
+            return tag && <Checkbox checked label={tag.name} onChange={() => removeTag(tag)} />
+          })}
+        </div>
       </div>
     </Stack>
   )
 }
+
+const FilterLabel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+  return <label className={'font-bold text-sm block' + ' ' + className}>{children}</label>
+}
+
+// const Radios = ({
+//   options,
+//   selected,
+//   multi = false,
+//   onChange
+// }: {
+//   options: { label: string; value: string }[]
+//   selected: string | string[]
+//   multi?: boolean
+//   onChange?: (selected: string | string[]) => void
+// }) => {
+//   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+//     event.target.value
+//   }
+//   const canDeselect = multi ?
+//   return (
+//     <div>
+//       {options.map((opt) => {
+//         <div key={opt.value}>
+//           <input type="checkbox" value={opt.value} onChange={handleChange} />
+//           <span>{opt.label}</span>
+//         </div>
+//       })}
+//     </div>
+//   )
+// }

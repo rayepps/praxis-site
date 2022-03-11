@@ -9,7 +9,7 @@ export default function HorizontalGallery({
 }) {
   return (
     <Split
-      overflowX='scroll'
+      className="overflow-x-scroll"
     >
       {(images ?? []).map((imageUrl, i) => (
         <Pane marginRight={i === images.length-1 ? 0 : majorScale(3)} key={`${imageUrl}_${i}`}>

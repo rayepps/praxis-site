@@ -8,6 +8,7 @@ export interface FetchState<TArgs, TResult> {
   started: boolean
   complete: boolean
   pending: boolean
+  success: boolean
   fetch: (args: TArgs, auth?: Auth) => Promise<ApiResponse<TResult>>
 }
 
@@ -18,6 +19,7 @@ export const useFetch = <TArgs, TResult>(
     loading: false,
     data: null,
     error: null,
+    success: false,
     started: false,
     complete: false,
     pending: false,
@@ -40,6 +42,7 @@ export const useFetch = <TArgs, TResult>(
         ...state,
         error: null,
         data,
+        success: true,
         loading: false,
         complete: true,
         started: true

@@ -57,6 +57,12 @@ const createApi = () => {
         module: 'system',
         function: 'listTags'
       })
+    },
+    marketing: {
+      addContact: endpoint<{ email: string; source: string }, {}>({
+        module: 'marketing',
+        function: 'addContact'
+      })
     }
   }
 }

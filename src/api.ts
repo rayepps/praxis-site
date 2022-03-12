@@ -8,7 +8,7 @@ const createApi = () => {
   return {
     events: {
       search: endpoint<
-        t.SearchQuery,
+        t.EventSearchOptions,
         {
           events: t.Event[]
           total: number

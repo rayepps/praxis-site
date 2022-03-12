@@ -20,7 +20,7 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
   return (
     <>
       {/* HERO */}
-      <div className="px-8 py-20 items-center justify-center lg:flex lg:flex-row">
+      <div className="px-2 md:px-8 py-20 items-center justify-center lg:flex lg:flex-row">
         <div className="max-w-6xl lg:flex lgflex-row">
           <Stack className="grow px-4 justify-center mb-24 md:mb-0">
             <div>
@@ -33,7 +33,7 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
               <span className="text-xl font-medium mb-2 inline-block text-gray-500 italic">
                 A responsibility, not just a right.
               </span>
-              <p className="max-w-prose pr-12 text-lg">
+              <p className="max-w-prose md:pr-12 text-lg">
                 We curate a list of the best tier one companies instructed by combat experienced veterans, former law
                 enforcement, and competitive shooters. Learn to be one with your weapon.
               </p>
@@ -51,7 +51,7 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
         </div>
       </div>
 
-      <div className="px-8 py-20 items-center justify-center mt-30 lg:flex lg:flex-row">
+      <div className="px-4 md:px-8 py-20 items-center justify-center mt-30 lg:flex lg:flex-row">
         <div className="max-w-6xl items-start lg:flex lg:flex-row">
           <div className="bg-black rounded-xl grow p-12 lg:mr-6 mb-10 lg:mb-0">
             <h2 className="md:text-5xl text-3xl font-bold mb-4 text-white">
@@ -165,7 +165,7 @@ const EventTrainingPreviewBlocks = ({ events }: { events: t.Event[] }) => {
     return OFFSETS[index % 3]
   }
   return (
-    <div className="md:p-10 p-0">
+    <div className="md:p-10 p-2">
       {events.map((event, idx) => (
         <Link href="/search" passHref key={event.id}>
           <a>

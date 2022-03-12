@@ -1,12 +1,13 @@
 import * as t from 'src/types'
 import { Stack, Split } from 'src/components/Layout'
 import formatDate from 'date-fns/format'
-import { currentEventState } from 'src/state/search'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineArrowNarrowRight } from 'react-icons/hi'
+import { eventsState } from 'src/state/events'
 
-export default function EventCard({ event }: { event: t.Event }) {
-  const setCurrentEvent = useSetRecoilState(currentEventState)
+export default function EventCard({ eventId, onClick }: { eventId: string; onClick?: () => void }) {
+  const event = useRecoilValue(eventsState(eventId))
+  if (!event) return null
 
   const start = event.startDate ? new Date(event.startDate) : null
   // const end = event.endDate ? new Date(event.endDate) : null
@@ -14,10 +15,6 @@ export default function EventCard({ event }: { event: t.Event }) {
   const format = (date: Date | null) => {
     if (!date) return ''
     return formatDate(date, 'MMM do')
-  }
-
-  const handleClick = () => {
-    setCurrentEvent(event.id)
   }
 
   const thumbnailUrl = (() => {
@@ -36,7 +33,7 @@ export default function EventCard({ event }: { event: t.Event }) {
   })()
 
   return (
-    <Stack className="bg-gray-50 rounded-b" onClick={handleClick}>
+    <Stack className="bg-gray-50 rounded-b" onClick={onClick}>
       <div
         className="relative rounded-t bg-cover bg-no-repeat bg-center h-56 w-full hover:cursor-pointer"
         style={{

@@ -26,7 +26,7 @@ export default function EventDetailScene({ event, onClose }: { event: t.Event; o
 
   return (
     <div>
-      <Split className="items-start mb-2">
+      <div className="flex flex-row items-start mb-2">
         <div className="mr-2 grow">
           <h4 className="text-3xl font-bold block">{event.training.name}</h4>
           <span className="text-sm mb-2 text-gray-400 block">{event.training.company.name}</span>
@@ -41,29 +41,29 @@ export default function EventDetailScene({ event, onClose }: { event: t.Event; o
         <button onClick={onClose}>
           <HiX size={24} className="text-black" />
         </button>
-      </Split>
-      <div className="flex justify-between bg-gray-50 mb-4 p-4 rounded-md">
-        <Split className="items-center">
+      </div>
+      <div className="flex flex-col md:flex-row justify-between bg-gray-50 mb-4 p-4 rounded-md">
+        <div className="flex flex-row items-center pb-2 md:pb-0">
           <HiOutlineCurrencyDollar size={24} className="text-slate-600 mr-2" />{' '}
           <span className="text-slate-600 text-md">{event.training.displayPrice}</span>
-        </Split>
-        <Split className="items-center">
+        </div>
+        <div className="flex flex-row items-center  pb-2 md:pb-0">
           <HiOutlineLocationMarker size={24} className="text-slate-600 mr-2" />{' '}
           <span className="text-slate-600 text-md">
             {event.city}, {event.state}
           </span>
-        </Split>
-        <Split className="items-center">
+        </div>
+        <div className="flex flex-row items-center">
           <HiOutlineCalendar size={24} className="text-slate-600 mr-2" />{' '}
           <span className="text-slate-600 text-md">{format(start)}</span>
-        </Split>
+        </div>
       </div>
       <HorizontalGallery images={images.map(img => img.url)} />
-      <Split className="my-6 rounded-lg bg-gray-50 items-center p-6">
+      <div className="my-6 flex flex-col md:flex-row rounded-lg bg-gray-50 items-center p-6">
         <div className="grow pr-6">
-          <h6 className="text-xl font-bold">Theory vs. Action</h6>
-          <p className="text-lg font-medium max-w-prose">
-            Welcome to the Praxis. The moment where your thoughts, plans, and ideas become action. Do more than think
+          <h6 className="text-2xl text-center md:text-left font-bold pb-2 md:pb-0">Theory vs. Action</h6>
+          <p className="text-lg text-center md:text-left font-medium max-w-prose">
+            The moment where your plans and ideas become action. Do more than think
             about training. Train.
           </p>
         </div>
@@ -72,11 +72,11 @@ export default function EventDetailScene({ event, onClose }: { event: t.Event; o
             event.externalLink ?? event.directLink ?? training.company?.externalLink ?? training.company?.directLink
           }
           target="_blank"
-          className="p-2 bg-black text-white rounded font-bold whitespace-nowrap"
+          className="p-2 bg-black text-center text-white w-full md:w-auto mt-4 md:mt-0 rounded font-bold whitespace-nowrap"
         >
           Sign Up Now
         </a>
-      </Split>
+      </div>
       <div className="mt-2">
         <div dangerouslySetInnerHTML={{ __html: training.description.html }} />
       </div>

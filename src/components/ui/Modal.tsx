@@ -12,7 +12,6 @@ interface Props {
   onClose?: () => void
   children?: React.ReactNode
   title?: string
-  hideHeader?: boolean
 }
 
 export default function ModalWrapper(props: Props) {
@@ -44,7 +43,6 @@ const Modal = ({
   onClose,
   children,
   title,
-  hideHeader = false
 }: Props) => {
   const handleCloseClick = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -53,41 +51,19 @@ const Modal = ({
   return !open ? null : (
     <>
       <BodyScrollLock />
-      <Pane
-        display='flex'
-        flexDirection='column'
-        alignItems='center'
-        justifyContent='center'
-        position='fixed'
-        width='100vw'
-        height='100vh'
-        top={0}
-        left={0}
-        backgroundColor='rgba(0, 0, 0, 0.5)'
+      <div
+        className="flex flex-col items-center justify-center fixed w-screen h-screen top-0 left-0 bg-black-opaque"
         onClick={handleCloseClick}
       >
-        <Pane
-          overflowY='scroll'
-          maxHeight='80vh'
-          maxWidth={800}
-          padding={majorScale(4)}
-          backgroundColor={theme.colors.white.hex()}
-          borderRadius={4}
+        <div
+          className="overflow-y-scroll h-screen lg:max-h-[80vh] lg:max-w-3xl p-4 md:p-12 bg-white lg:rounded"
           onClick={(e: SyntheticEvent) => e.stopPropagation()}
         >
-          {!hideHeader && (
-            <Split>
-              <Pane flex={1}>
-                {title && <Heading>{title}</Heading>}
-              </Pane>
-              <IconButton icon={HiX} onClick={handleCloseClick} />
-            </Split>
-          )}
-          <Pane>
+          <div>
             {children}
-          </Pane>
-        </Pane>
-      </Pane>
+          </div>
+        </div>
+      </div>
     </>
   )
 }

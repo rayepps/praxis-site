@@ -1,5 +1,3 @@
-import { Pane, Image, majorScale } from 'evergreen-ui'
-import { Split } from 'src/components/Layout'
 
 
 export default function HorizontalGallery({
@@ -8,14 +6,12 @@ export default function HorizontalGallery({
   images: string[]
 }) {
   return (
-    <Split
-      className="overflow-x-scroll"
+    <div
+      className="flex flex-row overflow-x-scroll"
     >
       {(images ?? []).map((imageUrl, i) => (
-        <Pane marginRight={i === images.length-1 ? 0 : majorScale(3)} key={`${imageUrl}_${i}`}>
-          <Image height={200} width='auto' src={imageUrl} borderRadius={4} />  
-        </Pane>
+        <img key={imageUrl} className="rounded h-52 w-auto mr-4" src={imageUrl} />  
       ))}
-    </Split>
+    </div>
   )
 }

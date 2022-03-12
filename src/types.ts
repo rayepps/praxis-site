@@ -3,41 +3,19 @@ export type Dict<T> = { [key: string]: T }
 
 export type TrainingType = 'tactical' | 'medical' | 'survival'
 
-export type OrderBy = 'date' | 'price'
-export type OrderAs = 'asc' | 'desc'
+export type SearchOrder = 'date:asc' | 'date:desc' | 'price:asc' | 'price:desc'
 
-export interface SearchPagination {
-    pageSize: number
-    page: number
-}
-
-export interface SearchOrder {
-    orderBy: OrderBy
-    orderAs: OrderAs
-}
-
-export interface SearchFilters {
+export interface EventSearchOptions {
+    pageSize?: number
+    page?: number
+    order?: SearchOrder
     type?: TrainingType
     tags?: string[]
     state?: string
     city?: string
     company?: string
-    dates?: {
-        preset: 'this-month' | 'next-month' | 'custom'
-        startsAfter?: string
-        endsBefore?: string
-    }
+    date?: `${string}<<${string}`
 }
-
-export interface SearchCurrentEvent {
-    eventId?: string
-}
-
-export interface Hashable {
-    hash?: string
-}
-
-export type SearchQuery = SearchPagination & SearchOrder & SearchFilters & SearchCurrentEvent & Hashable
 
 export interface Author {
     id: string

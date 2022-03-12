@@ -1,8 +1,9 @@
 import _ from 'radash'
 import flat from 'flat'
 
-const typify = (obj: Record<string, any>): Record<string, any> => {
-  const toType = (value: any): any => {
+const typify = (obj: Record<string, any>, overrides: Record<string, (str: string) => any> = {}): Record<string, any> => {
+  const toType = (key: string, value: any): any => {
+    if (overrides[key]) return overrides[key](value)
     if (value === 'true') return true
     if (value === 'false') return false
     if (_.isArray(value)) return (value as any[]).map(toType)
@@ -11,19 +12,22 @@ const typify = (obj: Record<string, any>): Record<string, any> => {
     if (!Number.isNaN(num)) return num
     return value
   }
-  return Object.entries(obj).reduce((acc, [key, value]) => ({
-    ...acc,
-    [key]: toType(value)
-  }), {} as Record<string, any>)
+  return Object.entries(obj).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]: toType(key, value)
+    }),
+    {} as Record<string, any>
+  )
 }
 
 /**
  * Converts an object into a complex query
  * string. Does not handle arrays of objects.
  */
-const serialize = (obj: any): string => {
-  const props = flat.flatten(obj) as Record<string, any>
-  return new URLSearchParams(props).toString()
+const serialize = (obj: Record<string, string | number | undefined | null>): string => {
+  const allStrings = _.mapValues(_.shake(obj), v => `${v}`)
+  return new URLSearchParams(allStrings).toString()
 }
 
 /**
@@ -31,11 +35,10 @@ const serialize = (obj: any): string => {
  * the serialize function back into the original
  * object
  */
-const deserialize = <T>(qs: string): T => {
+const deserialize = <T>(qs: string, mappers: Record<string, (str: string) => any>): Partial<T> => {
   const urlSearchParams = new URLSearchParams(qs)
   const params = Object.fromEntries(urlSearchParams.entries())
-  const data = flat.unflatten(params)
-  return typify(data as any) as T
+  return typify(params as any, mappers) as Partial<T>
 }
 
 export default {

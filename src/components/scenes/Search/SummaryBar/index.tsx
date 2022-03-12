@@ -1,41 +1,29 @@
 import * as t from 'src/types'
-import { Split } from 'src/components/Layout'
 import { HiOutlineFilter } from 'react-icons/hi'
+import Recoil from 'recoil'
+import { eventSearchOptionsState, eventSearchState } from 'src/state/events'
 
-export default function SummaryBar({
-  total,
-  pageNumber,
-  pageSize,
-  orderBy,
-  orderAs,
-  onOrderChange,
-  onToggleFilters
-}: {
-  total: number
-  pageNumber: number
-  pageSize: number
-  orderBy: t.OrderBy
-  orderAs: t.OrderAs
-  onOrderChange: (orderBy: t.OrderBy, orderAs: t.OrderAs) => void
-  onToggleFilters?: () => void
-}) {
-  const onChange = (key: string) => {
-    const [by, as] = key.split('-') as [t.OrderBy, t.OrderAs]
-    onOrderChange(by, as)
+export default function SummaryBar({ onToggleFilters }: { onToggleFilters?: () => void }) {
+  const [options, setOptions] = Recoil.useRecoilState(eventSearchOptionsState)
+  const { total } = Recoil.useRecoilValue(eventSearchState)
+  
+  const { page, pageSize, order } = options
+
+  const onChange = (newOrder: t.SearchOrder) => {
+    setOptions({ ...options, order: newOrder })
   }
-  const options: { label: string; value: string }[] = [
-    { label: 'Date - Today First', value: 'date-asc' },
-    { label: 'Date - Today Last', value: 'date-desc' },
-    { label: 'Price - Lowest First', value: 'price-asc' },
-    { label: 'Price - Lowest Last', value: 'price-desc' }
+  const orderOptions: { label: string; value: t.SearchOrder }[] = [
+    { label: 'Date - Today First', value: 'date:asc' },
+    { label: 'Date - Today Last', value: 'date:desc' },
+    { label: 'Price - Lowest First', value: 'price:asc' },
+    { label: 'Price - Lowest Last', value: 'price:desc' }
   ]
-  const value = `${orderBy}-${orderAs}`
-  const start = (pageNumber - 1) * pageSize
+  const start = (page - 1) * pageSize
   return (
     <div className="pt-4 flex flex-row items-center">
       <div className="md:hidden">
-        <button className='rounded bg-slate-200 p-2 mr-4' onClick={onToggleFilters}>
-          <HiOutlineFilter size={24} className='text-slate-600' />
+        <button className="rounded bg-black p-2 mr-4" onClick={onToggleFilters}>
+          <HiOutlineFilter size={16} className="text-white" />
         </button>
       </div>
       <div className="grow flex items-center">
@@ -46,8 +34,8 @@ export default function SummaryBar({
       </div>
       <div>
         <span className="font-bold mr-2 hidden md:inline">Sort:</span>
-        <select value={value} onChange={e => onChange(e.target.value)}>
-          {options.map(opt => (
+        <select value={order} onChange={e => onChange(e.target.value as any)}>
+          {orderOptions.map(opt => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>

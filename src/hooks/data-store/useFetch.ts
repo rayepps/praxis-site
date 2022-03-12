@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ApiError, ApiResponse, Auth } from '@exobase/client-builder'
 
+export type FetchFunc <TArgs, TResult> = (args: TArgs, auth?: Auth) => Promise<ApiResponse<TResult>>
 export interface FetchState<TArgs, TResult> {
   loading: boolean
   data: null | TResult
@@ -12,9 +13,7 @@ export interface FetchState<TArgs, TResult> {
   fetch: (args: TArgs, auth?: Auth) => Promise<ApiResponse<TResult>>
 }
 
-export const useFetch = <TArgs, TResult>(
-  fetchFunc: (args: TArgs, auth?: Auth) => Promise<ApiResponse<TResult>>
-): FetchState<TArgs, TResult> => {
+export const useFetch = <TArgs, TResult>(fetchFunc: FetchFunc<TArgs, TResult>): FetchState<TArgs, TResult> => {
   const [state, setState] = useState<FetchState<TArgs, TResult>>({
     loading: false,
     data: null,

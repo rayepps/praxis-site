@@ -1,26 +1,34 @@
 import { Center } from 'src/components/Layout'
 import { Pagination } from 'evergreen-ui'
+import Recoil from 'recoil'
+import { eventSearchOptionsState, eventSearchState } from 'src/state/events'
 
-export default function PaginationBar({
-  total,
-  page,
-  pageSize,
-  onPageChange
-}: {
-  total: number
-  page: number
-  pageSize: number
-  onPageChange: (newPage: number) => void
-}) {
-  const totalPages = Math.ceil(total / pageSize)
+export default function PaginationBar() {
+  const [options, setOptions] = Recoil.useRecoilState(eventSearchOptionsState)
+  const { total } = Recoil.useRecoilValue(eventSearchState)
+  const { page, pageSize } = options
+  if (!page || !pageSize || total === 0) return null
+  const totalPages = total === 0 ? 1 : Math.ceil(total / pageSize)
   const onNext = () => {
-    onPageChange(page + 1)
+    setOptions({
+      ...options,
+      page: page + 1,
+      pageSize
+    })
   }
   const onPrevious = () => {
-    onPageChange(page - 1)
+    setOptions({
+      ...options,
+      page: page - 1,
+      pageSize
+    })
   }
   const onChange = (newPage: number) => {
-    onPageChange(newPage)
+    setOptions({
+      ...options,
+      page: newPage,
+      pageSize
+    })
   }
   return (
     <Center className="py-4">

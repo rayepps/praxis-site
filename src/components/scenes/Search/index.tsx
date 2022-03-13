@@ -82,7 +82,7 @@ export default function SearchScene() {
           filtersOpen ? 'flex' : 'hidden'
         } top-0 left-0 w-screen h-screen bg-black-opaque z-[9] flex-row`}
       >
-        <div className={`max-w-screen-sm h-screen bg-white p-6`}>
+        <div className="max-w-screen-sm h-screen bg-white p-6">
           <SearchForm companies={companies} tags={tags} />
         </div>
         <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>

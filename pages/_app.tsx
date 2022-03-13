@@ -30,9 +30,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300400600700900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap"
           rel="stylesheet"
         />
         <script defer data-domain="praxisco.us" src="https://plausible.io/js/plausible.js"></script>

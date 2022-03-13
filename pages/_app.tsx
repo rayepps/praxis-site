@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Recoil.RecoilRoot>
         <Component {...pageProps} />
         <DebugObserver />
-        {process.env.NODE_ENV === 'development' && <AdminDevTools />}
+        <AdminDevTools />
       </Recoil.RecoilRoot>
     </>
   )

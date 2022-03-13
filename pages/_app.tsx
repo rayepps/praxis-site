@@ -8,6 +8,7 @@ import 'src/styles/index.css'
 import 'src/styles/nprogress.css'
 import Recoil, { useRecoilSnapshot } from 'recoil'
 import { useEffect } from 'react'
+import AdminDevTools from 'src/components/AdminDevTools'
 
 np.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => np.start())
@@ -52,6 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Recoil.RecoilRoot>
         <Component {...pageProps} />
         <DebugObserver />
+        {process.env.NODE_ENV === 'development' && <AdminDevTools />}
       </Recoil.RecoilRoot>
     </>
   )

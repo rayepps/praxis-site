@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@exobase/client-builder": "^0.0.2",
+    "@exobase/client-builder": "^0.0.4",
     "@segment/analytics-next": "^1.33.5",
     "add": "^2.0.6",
     "color": "^4.0.1",
@@ -46,6 +46,7 @@
     "@types/url-parse": "^1.4.4",
     "@types/uuid": "^8.3.1",
     "autoprefixer": "^10.4.2",
+    "axios": "^0.26.1",
     "babel-plugin-styled-components": "^1.13.2",
     "eslint": "8.0.0",
     "eslint-config-next": "11.1.2",

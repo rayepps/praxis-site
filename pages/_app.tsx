@@ -29,6 +29,18 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
+        <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+        <meta content="The best tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable. Start training today." name="description" />
+        <meta content="Praxis" property="og:title" />
+        <meta content="The best tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable. Start training today." property="og:description" />
+        <meta content="https://praxisco.us/preview.png" property="og:image" />
+        <meta content="Praxis" property="twitter:title" />
+        <meta content="The best tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable. Start training today." property="twitter:description" />
+        <meta content="https://praxisco.us/preview.png" property="twitter:image" />
+        <meta property="og:type" content="website" />
+        <meta content="@repsofsunshine" name="twitter:creator" />
+        <meta content="The best tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable. Start training today." name="twitter:card" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

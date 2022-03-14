@@ -24,7 +24,8 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
   const setType = (type: t.TrainingType) =>
     setOptions({
       ...options,
-      type: type
+      type: type,
+      page: 1
     })
 
   const resetOptions = () =>
@@ -36,34 +37,39 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
   const clearType = () =>
     setOptions({
       ...options,
-      type: undefined
+      type: undefined,
+      page: 1
     })
 
   const updateCompany = (companyId: string) => {
     setOptions({
       ...options,
-      company: companyId
+      company: companyId,
+      page: 1
     })
   }
 
   const clearCompany = () => {
     setOptions({
       ...options,
-      company: undefined
+      company: undefined,
+      page: 1
     })
   }
 
   const updateState = (state: string) => {
     setOptions({
       ...options,
-      state
+      state,
+      page: 1
     })
   }
 
   const clearState = () => {
     setOptions({
       ...options,
-      state: undefined
+      state: undefined,
+      page: 1
     })
   }
 
@@ -71,14 +77,16 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
     const newTags = options.tags?.filter(slug => slug !== tag.slug) ?? []
     setOptions({
       ...options,
-      tags: newTags.length > 0 ? newTags : undefined
+      tags: newTags.length > 0 ? newTags : undefined,
+      page: 1
     })
   }
 
   const addTag = (tagSlug: string) => {
     setOptions({
       ...options,
-      tags: _.unique([...(options.tags ?? []), tagSlug])
+      tags: _.unique([...(options.tags ?? []), tagSlug]),
+      page: 1
     })
   }
 
@@ -88,7 +96,8 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
     const endsBefore = range.end.toISOString()
     setOptions({
       ...options,
-      date: `${startsAfter}<<${endsBefore}`
+      date: `${startsAfter}<<${endsBefore}`,
+      page: 1
     })
   }
 

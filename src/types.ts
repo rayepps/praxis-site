@@ -104,6 +104,7 @@ export interface Event {
     state: string
     images: Asset[]
     name: string
+    soldOut: boolean
 }
 
 export interface FeatureTag {

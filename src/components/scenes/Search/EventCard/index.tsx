@@ -43,6 +43,11 @@ export default function EventCard({ eventId, onClick }: { eventId: string; onCli
         <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
           <span className="font-bold">{event.training.displayPrice}</span>
         </div>
+        {event.soldOut === true && (
+          <div className="rounded py-1 px-2 right-3 top-3 absolute bg-red-600">
+            <span className="text-xs font-black text-white uppercase">sold out</span>
+          </div>
+        )}
       </div>
       <Stack className="p-3 grow">
         <Split className="grow">

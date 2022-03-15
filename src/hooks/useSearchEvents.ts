@@ -1,6 +1,6 @@
-import { useRecoilCallback, useSetRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilCallback, useRecoilValue } from 'recoil'
 import api from 'src/api'
-import { useFetch, useQuery } from 'src/hooks'
+import { useQuery } from 'src/hooks'
 import * as t from 'src/types'
 import { eventSearchHashSelector, eventSearchOptionsState, eventSearchState, eventsState } from '../state/events'
 
@@ -17,7 +17,13 @@ import { eventSearchHashSelector, eventSearchOptionsState, eventSearchState, eve
  * currently in state. We always update all events because
  * why waste good data.
  */
-export const useSearchEvents = () => {
+export const useSearchEvents = ({
+  onStart,
+  onDone
+}: {
+  onStart?: () => void
+  onDone?: () => void
+} = {}) => {
   const hash = useRecoilValue(eventSearchHashSelector)
   const searchEvents = useQuery(`search.${hash}`, api.events.search)
   const options = useRecoilValue(eventSearchOptionsState)
@@ -36,7 +42,9 @@ export const useSearchEvents = () => {
   })
 
   const fetchAndStore = async () => {
+    onStart?.()
     const { error, data } = await searchEvents.query(options)
+    onDone?.()
     if (error) {
       return { error, data }
     }

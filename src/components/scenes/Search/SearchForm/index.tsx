@@ -90,6 +90,14 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
     })
   }
 
+  const clearDate = () => {
+    setOptions({
+      ...options,
+      date: undefined,
+      page: 1
+    })
+  }
+
   const handleDateRange = (range: { start: Date; end: Date }) => {
     setShowDateRange(false)
     const startsAfter = range.start.toISOString()
@@ -172,12 +180,17 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
       {/* DATES */}
       <div className="mb-6">
         <FilterLabel className="mb-1">Dates</FilterLabel>
-        <button
-          className="border border-black rounded p-1 w-full text-center"
-          onClick={() => setShowDateRange(!showDateRange)}
-        >
-          {options.date ? formatDateDisplay() : 'Select Dates'}
-        </button>
+        <div className="flex flex-row">
+          <button
+            className="border grow border-black rounded p-1 w-full text-center"
+            onClick={() => setShowDateRange(!showDateRange)}
+          >
+            {options.date ? formatDateDisplay() : 'Select Dates'}
+          </button>
+          <button onClick={clearDate} className="bg-white rounded border group border-slate-300 p-2 ml-1" disabled={!options.date}>
+            <HiX size={15} className="text-slate-600 group-disabled:text-slate-400" />
+          </button>
+        </div>
         <Popover
           position={Position.BOTTOM_LEFT}
           isShown={showDateRange}

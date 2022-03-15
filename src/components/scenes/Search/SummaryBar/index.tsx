@@ -18,7 +18,7 @@ export default function SummaryBar({ onToggleFilters }: { onToggleFilters?: () =
     { label: 'Price - Lowest First', value: 'price:asc' },
     { label: 'Price - Lowest Last', value: 'price:desc' }
   ]
-  const start = (page - 1) * pageSize
+  const start = ((page - 1) * pageSize) || 1
   return (
     <div className="pt-4 flex flex-row items-center">
       <div className="md:hidden">

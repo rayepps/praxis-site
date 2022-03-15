@@ -19,6 +19,7 @@ import { useSearchEvents } from 'src/hooks/useSearchEvents'
 import { currentEventIdState, eventSearchHashSelector, eventSearchOptionsState, eventsState } from 'src/state/events'
 import useUrlStateSync from 'src/hooks/useUrlStateSync'
 import useAnalytics from 'src/hooks/useAnalytics'
+import np from 'nprogress'
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -31,7 +32,10 @@ export default function SearchScene() {
   const hash = useRecoilValue(eventSearchHashSelector)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const { page } = useRecoilValue(eventSearchOptionsState)
-  const searchEvents = useSearchEvents()
+  const searchEvents = useSearchEvents({
+    onStart: () => np.start(),
+    onDone: () => np.done()
+  })
   const listCompanies = useQuery('companies', api.system.listCompanies)
   const listTags = useQuery('tags', api.system.listTags)
 

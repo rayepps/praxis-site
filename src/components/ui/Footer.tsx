@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <div className="md:py-4 mt-28 text-center">
       <span className="font-bold text-sm">
-        Email me at{' '}
+        Email me us{' '}
         <a className="text-yellow-400" href="mailto:ray@praxisco.us">
           ray@praxisco.us
         </a>{' '}

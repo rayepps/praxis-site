@@ -76,8 +76,8 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
               Soon
             </h2>
             <p className="max-w-prose">
-              Praxis is spanking new and we're just starting to roll out features and fill out our wharehouse of
-              companies, trainings, and events.
+              Praxis is just getting started. Our goal is to make high level training more available to the average American. Filling our database with
+              companies and events is priority. Here's what we're planning next.
             </p>
             <div className="mt-8 flex flex-col md:flex-row">
               <div
@@ -135,7 +135,7 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
             </div>
             <h4 className="text-3xl font-bold mt-8">Early Access</h4>
             <p className="max-w-prose">
-              Send us your email below and we'll make sure you know first when these features are ready.
+              Send us your email below and we'll email you first when these features are ready.
             </p>
             <AddContactForm form="early-access" />
           </div>

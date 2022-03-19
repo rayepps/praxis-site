@@ -35,10 +35,6 @@ const UnsubscribePage: NextPage<Props> = ({ id }) => {
       toaster.danger(error.details)
       return
     }
-    storage.subscriber.set({
-      id,
-      subscribed: false
-    })
   }
   return (
     <>

@@ -8,13 +8,25 @@ import 'src/styles/index.css'
 import 'src/styles/nprogress.css'
 import Recoil from 'recoil'
 import AdminDevTools from 'src/components/AdminDevTools'
+import { useEffect } from 'react'
+import storage from 'src/local-storage'
 
 np.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => np.start())
 Router.events.on('routeChangeComplete', () => np.done())
 Router.events.on('routeChangeError', () => np.done())
 
+declare global {
+  interface Window {
+    iamadmin: () => void
+  }
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    window.iamadmin = () => storage.isAdmin.set(true)
+  }, [])
   return (
     <>
       <Head>

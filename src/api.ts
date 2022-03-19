@@ -5,6 +5,7 @@ import config from './config'
 import type { AxiosRequestConfig } from 'axios'
 
 const appendSkipCacheHeader = (config: AxiosRequestConfig) => {
+  if (typeof window === 'undefined') return config
   const skipCache = localStorage.getItem('px.dev-tools.skip-cache') === 'yes'
   if (!skipCache) return config
   return {
@@ -40,7 +41,29 @@ const createApi = () => {
       >({
         module: 'events',
         function: 'findById'
-      })
+      }),
+      findBySlug: endpoint<
+        {
+          slug: string
+        },
+        {
+          event: t.Event
+        }
+      >({
+        module: 'events',
+        function: 'findBySlug'
+      }),
+      recentlyPublished: endpoint<
+      {
+        limit: number
+      },
+      {
+        events: t.Event[]
+      }
+    >({
+      module: 'events',
+      function: 'recentlyPublished'
+    })
     },
     system: {
       listCompanies: endpoint<
@@ -75,6 +98,24 @@ const createApi = () => {
       addContact: endpoint<{ email: string; source: string }, {}>({
         module: 'marketing',
         function: 'addContact'
+      }),
+      subscribe: endpoint<{ email: string; }, {
+        contact: {
+          id: string
+          email: string
+        }
+      }>({
+        module: 'marketing',
+        function: 'subscribe'
+      }),
+      unsubscribe: endpoint<{ id: string; }, {
+        contact: {
+          id: string
+          email: string
+        }
+      }>({
+        module: 'marketing',
+        function: 'unsubscribe'
       })
     }
   }

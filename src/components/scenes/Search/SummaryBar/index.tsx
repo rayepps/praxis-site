@@ -20,7 +20,7 @@ export default function SummaryBar({ onToggleFilters }: { onToggleFilters?: () =
   ]
   const start = ((page - 1) * pageSize) || 1
   return (
-    <div className="pt-4 flex flex-row items-center">
+    <div className="flex flex-row items-center">
       <div className="md:hidden">
         <button className="rounded bg-black p-2 mr-4" onClick={onToggleFilters}>
           <HiOutlineFilter size={16} className="text-white" />
@@ -29,7 +29,7 @@ export default function SummaryBar({ onToggleFilters }: { onToggleFilters?: () =
       <div className="grow flex items-center">
         <span className="font-bold mr-2 hidden md:inline">Results:</span>
         <span>
-          {start}-{Math.min(start + pageSize, total)} of {total}
+          {start}-{Math.min((start + pageSize - 1), total)} of {total}
         </span>
       </div>
       <div>

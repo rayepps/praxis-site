@@ -9,6 +9,7 @@ import startOfMonth from 'date-fns/startOfMonth'
 import getDate from 'date-fns/getDate'
 import addMonths from 'date-fns/addMonths'
 import getMonth from 'date-fns/getMonth'
+import parseDate from 'date-fns/parse'
 import formatDate from 'date-fns/format'
 import endOfMonth from 'date-fns/endOfMonth'
 import getYear from 'date-fns/getYear'
@@ -82,6 +83,14 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
     })
   }
 
+  const clearTags = () => {
+    setOptions({
+      ...options,
+      page: 1,
+      tags: undefined
+    })
+  }
+
   const addTag = (tagSlug: string) => {
     setOptions({
       ...options,
@@ -100,19 +109,23 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
 
   const handleDateRange = (range: { start: Date; end: Date }) => {
     setShowDateRange(false)
-    const startsAfter = range.start.toISOString()
-    const endsBefore = range.end.toISOString()
+    console.log(range)
+    const fmt = (date: Date) => formatDate(date, 'dd.MM.yyyy')
+    const newDate =
+      range.start.getTime() === range.end.getTime() ? fmt(range.start) : `${fmt(range.start)}-${fmt(range.end)}`
     setOptions({
       ...options,
-      date: `${startsAfter}<<${endsBefore}`,
+      date: newDate,
       page: 1
     })
   }
 
   const formatDateDisplay = () => {
-    const [startStr, endStr] = options.date?.split('<<') ?? ['', '']
-    const start = new Date(startStr)
-    const end = new Date(endStr)
+    const [startStr, endStr] = options.date?.includes('-')
+      ? options.date?.split('-') ?? ['', '']
+      : [options.date ?? '', options.date ?? '']
+    const start = parseDate(startStr, 'dd.MM.yyyy', new Date())
+    const end = parseDate(endStr, 'dd.MM.yyyy', new Date())
     const format = (d: Date) => {
       return formatDate(d, 'MMM do')
     }
@@ -121,6 +134,30 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
     }
     return `${format(start)} - ${format(end)}`
   }
+
+  const getDateRangeValue = () => {
+    if (!options.date)
+      return {
+        start: new Date(),
+        end: endOfMonth(new Date())
+      }
+    const [startStr, endStr] = options.date?.includes('-')
+      ? options.date?.split('-') ?? ['', '']
+      : [options.date ?? '', options.date ?? '']
+    return {
+      start: parseDate(startStr, 'dd.MM.yyyy', new Date()),
+      end: parseDate(endStr, 'dd.MM.yyyy', new Date())
+    }
+  }
+
+  const hasFiltersSet = (() => {
+    if (options.state) return true
+    if (options.date) return true
+    if (options.tags?.length ?? 0 > 0) return true
+    if (options.company) return true
+    if (options.type) return true
+    return false
+  })()
 
   return (
     <Stack className="w-64">
@@ -154,11 +191,11 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
             filterPlaceholder="Choose company"
             onSelect={item => updateCompany(item.value as string)}
           >
-            <button className="mr-1 grow border border-black rounded">
+            <button className="grow border border-black rounded">
               {options.company ? companies.find(c => c.slug === options.company)?.name : 'Select company'}
             </button>
           </SelectMenu>
-          <IconButton disabled={!options.company} icon={HiX} onClick={clearCompany} />
+          <ClearFilterButton disabled={!options.company} onClick={clearCompany} />
         </Split>
       </div>
       {/* STATE */}
@@ -167,14 +204,16 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
         <Split>
           <SelectMenu
             title="State"
-            options={Object.keys(US_STATES).map(state => ({ label: state, value: state }))}
+            options={Object.entries(US_STATES).map(([abbv, name]) => ({ label: name, value: abbv }))}
             selected={options.state}
             filterPlaceholder="Choose state"
             onSelect={item => updateState(item.value as string)}
           >
-            <button className="mr-1 grow border border-black rounded">{options.state || 'Select state'}</button>
+            <button className="grow border border-black rounded">
+              {options.state ? US_STATES[options.state] : 'Select state'}
+            </button>
           </SelectMenu>
-          <IconButton disabled={!options.state} icon={HiX} onClick={clearState} />
+          <ClearFilterButton disabled={!options.state} onClick={clearState} />
         </Split>
       </div>
       {/* DATES */}
@@ -187,22 +226,12 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
           >
             {options.date ? formatDateDisplay() : 'Select Dates'}
           </button>
-          <button onClick={clearDate} className="bg-white rounded border group border-slate-300 p-2 ml-1" disabled={!options.date}>
-            <HiX size={15} className="text-slate-600 group-disabled:text-slate-400" />
-          </button>
+          <ClearFilterButton disabled={!options.date} onClick={clearDate} />
         </div>
         <Popover
           position={Position.BOTTOM_LEFT}
           isShown={showDateRange}
-          content={
-            <DateRange
-              value={{
-                start: options.date ? new Date(options.date.split('<<')[0]) : new Date(),
-                end: options.date ? new Date(options.date.split('<<')[1]) : endOfMonth(new Date())
-              }}
-              onChange={handleDateRange}
-            />
-          }
+          content={<DateRange value={getDateRangeValue()} onChange={handleDateRange} />}
         >
           <div></div>
         </Popover>
@@ -218,18 +247,23 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
             filterPlaceholder="Choose tags"
             onSelect={item => addTag(item.value as string)}
           >
-            <button className="mr-1 py-1 grow border border-black rounded">Select tag</button>
+            <button className="py-1 grow border border-black rounded">Select tag</button>
           </SelectMenu>
+          <ClearFilterButton disabled={!options.tags?.length} onClick={clearTags} />
         </Split>
         <div>
           {options.tags?.map(tagSlug => {
             const tag = tags.find(t => t.slug === tagSlug)
-            return tag && <Checkbox checked label={tag.name} onChange={() => removeTag(tag)} />
+            return tag && <Checkbox key={tagSlug} checked label={tag.name} onChange={() => removeTag(tag)} />
           })}
         </div>
       </div>
       <div className="pt-4 flex flex-row justify-center">
-        <button onClick={resetOptions} className="font-bold text-sm hover:text-red-600">
+        <button 
+          disabled={!hasFiltersSet} 
+          onClick={resetOptions} 
+          className="font-bold text-sm text-black hover:text-red-600 disabled:text-slate-200 disabled:hover:text-slate-200"
+        >
           reset
         </button>
       </div>
@@ -239,6 +273,18 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
 
 const FilterLabel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
   return <label className={'font-bold text-sm block' + ' ' + className}>{children}</label>
+}
+
+const ClearFilterButton = ({ disabled, onClick }: { disabled: boolean; onClick?: () => void }) => {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="disabled:bg-white rounded border group disabled:border-slate-100 border-black p-2 ml-1 bg-black"
+    >
+      <HiX size={15} className="group-disabled:text-slate-200 text-white" />
+    </button>
+  )
 }
 
 //

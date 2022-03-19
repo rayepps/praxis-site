@@ -1,42 +1,39 @@
 import { useState, useEffect } from 'react'
+import createAnalytics, { PraxisAnalytics } from 'src/analytics'
 import { Analytics, AnalyticsBrowser } from '@segment/analytics-next'
+import storage from 'src/local-storage'
+import config from 'src/config'
 
 declare global {
   interface Window {
-    segment_analytics: Analytics
+    px_segment_analytics: Analytics
   }
 }
 
-const PendingQueue = (): Pick<Analytics, 'track'> & { tracks: () => any[][] } => {
-  const tracks: Record<number, any> = {}
-  return {
-    track: async (...args: any[]): Promise<any> => {
-      tracks[Object.keys(tracks).length] = args
-      return
-    },
-    tracks: () => Object.values(tracks)
+const load = async (): Promise<Analytics | null> => {
+  if (storage.skipAnalytics.get() === true) {
+    return null
   }
+  if (!config.segmentKey) {
+    console.warn('FIXME: No segment key configured')
+    return null
+  }
+  if (window?.px_segment_analytics?.initialized === true) {
+    return window.px_segment_analytics
+  }
+  const [analytics] = await AnalyticsBrowser.load({ writeKey: config.segmentKey })
+  window.px_segment_analytics = analytics
+  return analytics
 }
 
-export const useAnalytics = (): Pick<Analytics, 'track'> => {
-  const [analytics, setAnalytics] = useState<Pick<Analytics, 'track'>>(PendingQueue())
+export const useAnalytics = (): PraxisAnalytics | null => {
+  const [analytics, setAnalytics] = useState<PraxisAnalytics | null>(null)
   useEffect(() => {
-    load()
+    load().then(a => {
+      if (!a) return
+      setAnalytics(createAnalytics(a))
+    })
   }, [])
-  const load = async () => {
-    if ((analytics as any).initialized === true) return
-    if (window.segment_analytics) {
-      setAnalytics(window.segment_analytics)
-      return
-    }
-    const [a] = await AnalyticsBrowser.load({ writeKey: 'H0jLU0Du35HX6AqumOMYjw0AcBsHLNc0' })
-    window.segment_analytics = a
-    for (const args of (analytics as ReturnType<typeof PendingQueue>).tracks()) {
-      console.log('x--> backtracking: ', { args })
-      a.track.apply(null, args as any)
-    }
-    setAnalytics(a)
-  }
   return analytics
 }
 

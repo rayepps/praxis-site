@@ -17,6 +17,14 @@ export const eventSearchState = atom({
   }
 })
 
+export const eventSearchStateSelector = selector<t.Event[]>({
+  key: 'eventSearchStateSelector',
+  get: ({ get }) => {
+    const { results: ids } = get(eventSearchState)
+    return ids.map(id => get(eventsState(id))).filter(x => !!x) as t.Event[]
+  }
+})
+
 export const currentEventIdState = atom<null | string>({
   key: 'currentEventIdState',
   default: null

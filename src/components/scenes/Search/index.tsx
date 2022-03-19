@@ -11,18 +11,26 @@ import * as t from '../../../types'
 import { useFetch, useQuery } from '../../../hooks'
 
 import SearchForm from './SearchForm'
-import EventGrid from './EventGrid'
+import EventGrid from 'src/components/ui/EventGrid'
 import SummaryBar from './SummaryBar'
 import PaginationBar from './PaginationBar'
-import EventDetailModal from './EventDetailModal'
+import EventDetailModal from 'src/components/ui/EventDetailModal'
 import { useSearchEvents } from 'src/hooks/useSearchEvents'
-import { currentEventIdState, eventSearchHashSelector, eventSearchOptionsState, eventsState } from 'src/state/events'
+import {
+  currentEventIdState,
+  currentEventSelector,
+  eventSearchHashSelector,
+  eventSearchOptionsState,
+  eventSearchState,
+  eventSearchStateSelector,
+  eventsState
+} from 'src/state/events'
 import useUrlStateSync from 'src/hooks/useUrlStateSync'
 import useAnalytics from 'src/hooks/useAnalytics'
 import np from 'nprogress'
 
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-date-range/dist/styles.css' // main style file
+import 'react-date-range/dist/theme/default.css' // theme css file
 
 export default function SearchScene() {
   useUrlStateSync()
@@ -38,26 +46,21 @@ export default function SearchScene() {
   })
   const listCompanies = useQuery('companies', api.system.listCompanies)
   const listTags = useQuery('tags', api.system.listTags)
+  const searchResults = Recoil.useRecoilValue(eventSearchStateSelector)
+  const setCurrentEventId = useSetRecoilState(currentEventIdState)
+  const currentlySelectedEvent = useRecoilValue(currentEventSelector)
 
-  const handleEventClick = useRecoilCallback(({ set, snapshot }) => (eventId: string) => {
-    set(currentEventIdState, eventId)
-    snapshot.getPromise(eventsState(eventId)).then((event: t.Event | null) => {
+  const handleEventClick = useRecoilCallback(({ set, snapshot }) => (e: t.Event) => {
+    set(currentEventIdState, e.id)
+    snapshot.getPromise(eventsState(e.id)).then((event: t.Event | null) => {
       if (!event) return
-      analytics?.track({
-        event: 'event.view',
-        type: 'track',
-        properties: {
-          event_id: event.id,
-          event_name: event.name,
-          company_id: event.training.company.id,
-          company_name: event.training.company.name,
-          domain: new URI(event.training.company.directLink).domain(),
-          training_id: event.training.id,
-          training_name: event.training.name
-        }
-      })
+      analytics?.track_event_viewed(event)
     })
   })
+
+  const closeModal = () => {
+    setCurrentEventId(null)
+  }
 
   const toggleFilters = () => {
     setFiltersOpen(!filtersOpen)
@@ -91,7 +94,7 @@ export default function SearchScene() {
         </div>
         <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>
       </div>
-      <EventDetailModal />
+      <EventDetailModal event={currentlySelectedEvent} onClose={closeModal} />
       <div className="w-screen flex flex-row justify-center">
         <div className="items-start md:pl-4 flex max-w-screen-3xl grow flex-row">
           <div className="hidden md:block p-4 rounded-xl bg-gray-50">
@@ -99,7 +102,27 @@ export default function SearchScene() {
           </div>
           <div ref={topOfListRef} className="grow px-4 flex flex-col w-full">
             <SummaryBar onToggleFilters={toggleFilters} />
-            <EventGrid loading={searchEvents.loading} onEventClick={handleEventClick} />
+            <div className="py-4">
+              <EventGrid
+                events={searchResults ?? []}
+                loading={searchEvents.loading}
+                onEventClick={handleEventClick}
+                fallback={
+                  <div className="grow min-h-[70vh] flex flex-row items-center justify-center">
+                    <div className="grow max-w-md bg-slate-100 rounded-lg p-6">
+                      <h3 className="text-2xl font-bold">No Results</h3>
+                      <p className="text-base">
+                        We don't have any trainings that match your search. Are we missing something? Let us know at{' '}
+                        <a className="font-bold text-yellow-300" href="mailto:ray@praxisco.us">
+                          ray@praxisco.us
+                        </a>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                }
+              />
+            </div>
             <PaginationBar />
           </div>
         </div>

@@ -1,16 +1,19 @@
 import { ChangeEventHandler, useCallback, useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
+import storage from 'src/local-storage'
 
 export default function AdminDevTools() {
   const [state, setState] = useState({
     isAdmin: false,
-    skipCache: false
+    skipCache: false,
+    skipAnalytics: false
   })
 
   useEffect(() => {
     setState({
-      isAdmin: localStorage.getItem('px.is-dev-admin') === 'yes',
-      skipCache: localStorage.getItem('px.dev-tools.skip-cache') === 'yes'
+      isAdmin: storage.isAdmin.get(),
+      skipCache: storage.skipCache.get(),
+      skipAnalytics: storage.skipAnalytics.get()
     })
   }, [])
 
@@ -20,8 +23,14 @@ export default function AdminDevTools() {
 
   const handleBustCacheChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const shouldSkipCache = event.target.checked
-    localStorage.setItem('px.dev-tools.skip-cache', shouldSkipCache ? 'yes' : 'no')
+    storage.skipCache.set(true)
     setState({ ...state, skipCache: shouldSkipCache })
+  }
+
+  const handleSkipAnalyticsChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const shouldSkipAnalytics = event.target.checked
+    storage.skipAnalytics.set(true)
+    setState({ ...state, skipAnalytics: shouldSkipAnalytics })
   }
 
   return (
@@ -31,6 +40,10 @@ export default function AdminDevTools() {
         <div className="flex flex-row items-center">
           <input onChange={handleBustCacheChange} checked={state.skipCache} type="checkbox" className="w-4 h-4 border-slate-100" />
           <span className="text-slate-100 block ml-2">Skip Cache</span>
+        </div>
+        <div className="flex flex-row items-center">
+          <input onChange={handleSkipAnalyticsChange} checked={state.skipAnalytics} type="checkbox" className="w-4 h-4 border-slate-100" />
+          <span className="text-slate-100 block ml-2">Skip Analytics</span>
         </div>
       </div>
     </div>

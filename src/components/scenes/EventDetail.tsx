@@ -5,7 +5,7 @@ import { Center, Split } from '../Layout'
 import HorizontalGallery from 'src/components/ui/HorizontalGallery'
 import { HiX, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineCurrencyDollar } from 'react-icons/hi'
 
-export default function EventDetailScene({ event, onClose }: { event: t.Event; onClose?: () => void }) {
+export default function EventDetailScene({ event }: { event: t.Event }) {
   const { training } = event
 
   const start = event.startDate ? new Date(event.startDate) : null
@@ -25,60 +25,75 @@ export default function EventDetailScene({ event, onClose }: { event: t.Event; o
   ].filter(x => !!x)
 
   return (
-    <div>
-      <div className="flex flex-row items-start mb-2">
-        <div className="mr-2 grow">
-          <h4 className="text-3xl font-bold block">{event.training.name}</h4>
-          <span className="text-sm mb-2 text-gray-400 block">{event.training.company.name}</span>
-          <div className="">
-            {event.training.tags?.map(tag => (
-              <div key={tag.slug} className="px-2 bg-gray-200 rounded inline-block mr-2 mb-2">
-                <span className="font-bold text-xs text-slate-500">{tag.name}</span>
+    <div className="flex flex-row justify-center mt-20">
+      <div className="max-w-screen-3xl px-4">
+        <div className="flex flex-row justify-center">
+          <div className="max-w-screen-lg grow">
+            <div className="flex flex-row items-start mb-8">
+              <div className="mr-2 grow">
+                <h1 className="text-5xl font-bold block">{event.training.name}</h1>
+                <span className="text-xl mb-2 text-gray-400 block">{event.training.company.name}</span>
+                <div className="">
+                  {event.training.tags?.map(tag => (
+                    <div key={tag.slug} className="px-2 bg-gray-200 rounded inline-block mr-2 mb-2">
+                      <span className="font-bold text-xs text-slate-500">{tag.name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+              <div
+                className="shadow rounded-xl bg-cover bg-no-repeat bg-center h-40 w-40"
+                style={{
+                  backgroundImage: `url(${event.training.company?.thumbnail?.url})`
+                }}
+              />
+            </div>
+            <div className="flex flex-col md:flex-row justify-between bg-gray-50 mb-8 p-4 rounded-md">
+              <div className="flex flex-row items-center pb-2 md:pb-0">
+                <HiOutlineCurrencyDollar size={24} className="text-slate-600 mr-2" />{' '}
+                <span className="text-slate-600 text-md">{event.training.displayPrice}</span>
+              </div>
+              <div className="flex flex-row items-center  pb-2 md:pb-0">
+                <HiOutlineLocationMarker size={24} className="text-slate-600 mr-2" />{' '}
+                <span className="text-slate-600 text-md">
+                  {event.city}, {event.state}
+                </span>
+              </div>
+              <div className="flex flex-row items-center">
+                <HiOutlineCalendar size={24} className="text-slate-600 mr-2" />{' '}
+                <span className="text-slate-600 text-md">{format(start)}</span>
+              </div>
+            </div>
           </div>
         </div>
-        <button onClick={onClose}>
-          <HiX size={24} className="text-black" />
-        </button>
-      </div>
-      <div className="flex flex-col md:flex-row justify-between bg-gray-50 mb-4 p-4 rounded-md">
-        <div className="flex flex-row items-center pb-2 md:pb-0">
-          <HiOutlineCurrencyDollar size={24} className="text-slate-600 mr-2" />{' '}
-          <span className="text-slate-600 text-md">{event.training.displayPrice}</span>
+        <HorizontalGallery images={images.map(img => img.url)} className="h-96" />
+        <div className="flex flex-row justify-center">
+          <div className="max-w-screen-md">
+            <div className="my-6 flex flex-col md:flex-row rounded-lg bg-gray-50 items-center p-6">
+              <div className="grow pr-6">
+                <h6 className="text-2xl text-center md:text-left font-bold pb-2 md:pb-0">Theory vs. Action</h6>
+                <p className="text-lg text-center md:text-left font-medium max-w-prose">
+                  The moment where your plans and ideas become action. Do more than think about training. Train.
+                </p>
+              </div>
+              <a
+                href={
+                  event.externalLink ??
+                  event.directLink ??
+                  training.company?.externalLink ??
+                  training.company?.directLink
+                }
+                target="_blank"
+                className="p-2 bg-black text-center text-white w-full md:w-auto mt-4 md:mt-0 rounded font-bold whitespace-nowrap"
+              >
+                Sign Up Now
+              </a>
+            </div>
+            <div className="mt-2">
+              <div dangerouslySetInnerHTML={{ __html: training.description.html }} />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-row items-center  pb-2 md:pb-0">
-          <HiOutlineLocationMarker size={24} className="text-slate-600 mr-2" />{' '}
-          <span className="text-slate-600 text-md">
-            {event.city}, {event.state}
-          </span>
-        </div>
-        <div className="flex flex-row items-center">
-          <HiOutlineCalendar size={24} className="text-slate-600 mr-2" />{' '}
-          <span className="text-slate-600 text-md">{format(start)}</span>
-        </div>
-      </div>
-      <HorizontalGallery images={images.map(img => img.url)} />
-      <div className="my-6 flex flex-col md:flex-row rounded-lg bg-gray-50 items-center p-6">
-        <div className="grow pr-6">
-          <h6 className="text-2xl text-center md:text-left font-bold pb-2 md:pb-0">Theory vs. Action</h6>
-          <p className="text-lg text-center md:text-left font-medium max-w-prose">
-            The moment where your plans and ideas become action. Do more than think
-            about training. Train.
-          </p>
-        </div>
-        <a
-          href={
-            event.externalLink ?? event.directLink ?? training.company?.externalLink ?? training.company?.directLink
-          }
-          target="_blank"
-          className="p-2 bg-black text-center text-white w-full md:w-auto mt-4 md:mt-0 rounded font-bold whitespace-nowrap"
-        >
-          Sign Up Now
-        </a>
-      </div>
-      <div className="mt-2">
-        <div dangerouslySetInnerHTML={{ __html: training.description.html }} />
       </div>
     </div>
   )

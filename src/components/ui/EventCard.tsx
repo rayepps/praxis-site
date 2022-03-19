@@ -1,12 +1,15 @@
-import * as t from 'src/types'
 import { Stack, Split } from 'src/components/Layout'
 import formatDate from 'date-fns/format'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineArrowNarrowRight } from 'react-icons/hi'
-import { eventsState } from 'src/state/events'
+import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi'
+import * as t from 'src/types'
 
-export default function EventCard({ eventId, onClick }: { eventId: string; onClick?: () => void }) {
-  const event = useRecoilValue(eventsState(eventId))
+export default function EventCard({ 
+  event, 
+  onClick 
+}: { 
+  event: t.Event
+  onClick?: () => void 
+}) {
   if (!event) return null
 
   const start = event.startDate ? new Date(event.startDate) : null
@@ -34,18 +37,21 @@ export default function EventCard({ eventId, onClick }: { eventId: string; onCli
 
   return (
     <Stack className="bg-gray-50 rounded-b" onClick={onClick}>
-      <div
-        className="relative rounded-t bg-cover bg-no-repeat bg-center h-56 w-full hover:cursor-pointer"
-        style={{
-          backgroundImage: `url(${thumbnailUrl})`
-        }}
-      >
-        <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
-          <span className="font-bold">{event.training.displayPrice}</span>
-        </div>
+      <div className="relative h-56 w-full hover:cursor-pointer">
+        <img src={thumbnailUrl} className="object-cover h-full w-full rounded-t" />
+        {!!event.training.price && (
+          <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
+            <span className="font-bold">{event.training.displayPrice}</span>
+          </div>
+        )}
         {event.soldOut === true && (
           <div className="rounded py-1 px-2 right-3 top-3 absolute bg-red-600">
             <span className="text-xs font-black text-white uppercase">sold out</span>
+          </div>
+        )}
+        {!event.soldOut && event.recentlyAdded === true && (
+          <div className="rounded py-1 px-2 right-3 top-3 absolute bg-green-600">
+            <span className="text-xs font-black text-white uppercase">new</span>
           </div>
         )}
       </div>

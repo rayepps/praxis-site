@@ -27,8 +27,8 @@ const Home: NextPage<Props> = ({ featuredEvents }) => {
     <>
       <Head>
         <Meta
-          title='Praxis | Tactical &amp; Apparel'
-          description='The best tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable. Start training today.'
+          title='Praxis | Tactical & Apparel'
+          description='Tactical, survival, and medical trainings from companies across the US. Organized and searchable.'
           thumbnailUrl='https://praxisco.us/preview.png'
         />
       </Head>

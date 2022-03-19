@@ -6,25 +6,13 @@ import np from 'nprogress'
 import 'src/styles/tailwind.css'
 import 'src/styles/index.css'
 import 'src/styles/nprogress.css'
-import Recoil, { useRecoilSnapshot } from 'recoil'
-import { useEffect } from 'react'
+import Recoil from 'recoil'
 import AdminDevTools from 'src/components/AdminDevTools'
 
 np.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => np.start())
 Router.events.on('routeChangeComplete', () => np.done())
 Router.events.on('routeChangeError', () => np.done())
-
-function DebugObserver() {
-  const snapshot = useRecoilSnapshot()
-  useEffect(() => {
-    console.debug('The following atoms were modified:')
-    for (const node of (snapshot as any).getNodes_UNSTABLE({ isModified: true })) {
-      console.debug(node.key, snapshot.getLoadable(node))
-    }
-  }, [snapshot])
-  return null
-}
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -44,7 +32,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <Recoil.RecoilRoot>
         <Component {...pageProps} />
-        <DebugObserver />
         <AdminDevTools />
       </Recoil.RecoilRoot>
     </>

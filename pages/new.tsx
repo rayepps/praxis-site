@@ -4,7 +4,6 @@ import Footer from '../src/components/ui/Footer'
 import Header from '../src/components/ui/Header'
 import RecentlyPublishedScene from '../src/components/scenes/RecentlyPublished'
 import * as t from '../src/types'
-import graphcms from '../src/graphcms'
 import Meta from 'src/Meta'
 import api from 'src/api'
 import MarketingPrompts from 'src/components/MarketingPrompts'
@@ -29,7 +28,7 @@ const Home: NextPage<Props> = ({ events }) => {
       <Head>
         <Meta
           title='Recently Added Events'
-          description='The best tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable. Start training today.'
+          description='Recent tactical, survival, and medical trainings from over a hundred companies across the US. Organized and searchable.'
           thumbnailUrl='https://praxisco.us/preview.png'
         />
       </Head>

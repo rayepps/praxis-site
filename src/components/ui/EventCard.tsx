@@ -1,15 +1,8 @@
-import { Stack, Split } from 'src/components/Layout'
 import formatDate from 'date-fns/format'
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi'
 import * as t from 'src/types'
 
-export default function EventCard({ 
-  event, 
-  onClick 
-}: { 
-  event: t.Event
-  onClick?: () => void 
-}) {
+export default function EventCard({ event, onClick }: { event: t.Event; onClick?: () => void }) {
   if (!event) return null
 
   const start = event.startDate ? new Date(event.startDate) : null
@@ -36,9 +29,9 @@ export default function EventCard({
   })()
 
   return (
-    <Stack className="bg-gray-50 rounded-b" onClick={onClick}>
+    <div className="drop-shadow-lg flex flex-col" onClick={onClick}>
       <div className="relative h-56 w-full hover:cursor-pointer">
-        <img src={thumbnailUrl} className="object-cover h-full w-full rounded-t" />
+        <img src={thumbnailUrl} className="object-cover h-full w-full rounded-t-lg" />
         {!!event.training.price && (
           <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
             <span className="font-bold">{event.training.displayPrice}</span>
@@ -55,11 +48,11 @@ export default function EventCard({
           </div>
         )}
       </div>
-      <Stack className="p-3 grow">
-        <Split className="grow">
+      <div className="p-3 grow bg-white flex flex-col rounded-b-md">
+        <div className="grow flex flex-row">
           <div className="grow">
-            <h4 className="text-lg font-bold">{event.training.name}</h4>
-            <span className="text-sm mb-2 text-gray-400 inline-block">{event.training.company.name}</span>
+            <h4 className="text-xl pr-2 font-bold">{event.training.name}</h4>
+            <span className="text-sm font-semibold mb-2 text-gray-600 inline-block">{event.training.company.name}</span>
             <div className="">
               {event.training.tags.map(tag => (
                 <div key={tag.slug} className="px-2 bg-gray-200 rounded inline-block mr-2 mb-2">
@@ -68,30 +61,24 @@ export default function EventCard({
               ))}
             </div>
           </div>
-          <div>
-            <div
-              className="rounded bg-cover bg-no-repeat bg-center h-10 w-10"
-              style={{
-                backgroundImage: `url(${event.training.company?.thumbnail?.url})`
-              }}
-            />
-          </div>
-        </Split>
-        <Split>
+
+          <img src={event.training.company?.thumbnail?.url} className="object-cover h-10 w-10 rounded" />
+        </div>
+        <div className="flex flex-row">
           <div className="grow">
-            <Split className="items-center">
+            <div className="flex flex-row items-center">
               <HiOutlineLocationMarker size={16} className="text-slate-400 mr-2" />{' '}
               <span className="text-slate-400">
                 {event.city}, {event.state}
               </span>
-            </Split>
-            <Split className="items-center">
+            </div>
+            <div className="flex flex-row items-center">
               <HiOutlineCalendar size={16} className="text-slate-400 mr-2" />{' '}
               <span className="text-slate-400">{format(start)}</span>
-            </Split>
+            </div>
           </div>
-        </Split>
-      </Stack>
-    </Stack>
+        </div>
+      </div>
+    </div>
   )
 }

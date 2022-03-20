@@ -97,7 +97,7 @@ export default function SearchScene() {
       <EventDetailModal event={currentlySelectedEvent} onClose={closeModal} />
       <div className="w-screen flex flex-row justify-center">
         <div className="items-start md:pl-4 flex max-w-screen-3xl grow flex-row">
-          <div className="hidden md:block p-4 rounded-xl bg-gray-50">
+          <div className="hidden md:block p-4 rounded-xl">
             <SearchForm companies={companies} tags={tags} />
           </div>
           <div ref={topOfListRef} className="grow px-4 flex flex-col w-full">

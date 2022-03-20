@@ -3,11 +3,11 @@ import api from '@exobase/client-builder'
 import * as t from './types'
 import config from './config'
 import type { AxiosRequestConfig } from 'axios'
+import storage from 'src/local-storage'
 
 const appendSkipCacheHeader = (config: AxiosRequestConfig) => {
   if (typeof window === 'undefined') return config
-  const skipCache = localStorage.getItem('px.dev-tools.skip-cache') === 'yes'
-  if (!skipCache) return config
+  if (!storage.skipCache.get()) return config
   return {
     ...config,
     headers: {

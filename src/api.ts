@@ -40,7 +40,7 @@ const createApi = () => {
         }
       >({
         module: 'events',
-        function: 'findById'
+        function: 'find-by-id'
       }),
       findBySlug: endpoint<
         {
@@ -51,7 +51,7 @@ const createApi = () => {
         }
       >({
         module: 'events',
-        function: 'findBySlug'
+        function: 'find-by-slug'
       }),
       recentlyPublished: endpoint<
       {
@@ -62,7 +62,7 @@ const createApi = () => {
       }
     >({
       module: 'events',
-      function: 'recentlyPublished'
+      function: 'recently-published'
     })
     },
     companies: {
@@ -90,7 +90,7 @@ const createApi = () => {
     marketing: {
       addContact: endpoint<{ email: string; source: string }, {}>({
         module: 'marketing',
-        function: 'addContact'
+        function: 'add-contact'
       }),
       subscribe: endpoint<{ email: string; }, {
         contact: {
@@ -114,7 +114,7 @@ const createApi = () => {
         giveaway: t.Giveaway | null
       }>({
         module: 'marketing',
-        function: 'getActiveGiveaway'
+        function: 'get-active-giveaway'
       })
     },
     trainings: {

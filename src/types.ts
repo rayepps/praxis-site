@@ -2,18 +2,26 @@ export type Dict<T> = { [key: string]: T }
 
 export type TrainingType = 'tactical' | 'medical' | 'survival'
 
-export type SearchOrder = 'date:asc' | 'date:desc' | 'price:asc' | 'price:desc'
+export type EventSearchOrder = 'date:asc' | 'date:desc' | 'price:asc' | 'price:desc'
+export type TrainingSearchOrder = 'price:asc' | 'price:desc'
+
+export type PriceUnit = 'per_training' | 'per_hour'
 
 export interface EventSearchOptions {
   pageSize?: number
   page?: number
-  order?: SearchOrder
+  order?: EventSearchOrder
   type?: TrainingType
   tags?: string[]
   state?: string
   city?: string
   company?: string
   date?: string
+  appointmentOnly?: boolean
+}
+
+export type TrainingSearchOptions = Omit<EventSearchOptions, 'date' | 'order'> & {
+  order: TrainingSearchOrder
 }
 
 export interface Author {
@@ -71,13 +79,19 @@ export interface Training {
   externalLink: string
   tags: Tag[]
   price: number
+  priceUnit: PriceUnit
   type: TrainingType
   description: RichText
   gallery: Asset[]
   thumbnail: Asset
   events: Event[]
   slug: string
+  location: Location
   displayPrice: string | null
+  recentlyAdded: boolean
+  city: string
+  state: string
+  appointmentOnly: boolean
 }
 
 export interface Instructor {
@@ -137,9 +151,19 @@ export interface ContactMetadata {
 }
 
 export interface TrackedSession {
+  contactId: string | null
   timestamp: number
   expiration: number
   subscriptions: Subscription[]
   metadata: ContactMetadata | null
   prompted: Subscription[]
+}
+
+export interface Giveaway {
+  id: string
+  name: string
+  key: string
+  endDate: string
+  active: boolean
+  events: Event[]
 }

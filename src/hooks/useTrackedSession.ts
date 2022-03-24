@@ -45,6 +45,7 @@ const useTrackedSession = (): [t.TrackedSession | null, {
   const createSession = async (): Promise<t.TrackedSession> => {
     const data = await abstract.inquire()
     const newSession: t.TrackedSession = {
+      contactId: null,
       timestamp: new Date().getTime(),
       expiration: addDays(new Date(), SESSION_DURATION_DAYS).getTime(),
       subscriptions: [],
@@ -62,10 +63,10 @@ const useTrackedSession = (): [t.TrackedSession | null, {
     countryCode: data.country_code,
     longitude: data.longitude,
     latitude: data.latitude,
-    tz: data.timezone.name,
-    tzAbbreviation: data.timezone.abbreviation,
-    utcOffset: data.timezone.gmt_offset,
-    dst: data.timezone.is_dst,
+    tz: data.timezone?.name,
+    tzAbbreviation: data.timezone?.abbreviation,
+    utcOffset: data.timezone?.gmt_offset,
+    dst: data.timezone?.is_dst,
   })
   const changes = {
     recordSubscription: (sub: t.Subscription) => {

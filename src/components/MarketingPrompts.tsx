@@ -61,6 +61,10 @@ export default function MarketingPrompts () {
     })
   }
   const dismissModal = () => {
+    analytics?.track_dismiss_alerts_subscription({
+      ...session!.metadata!,
+      contact_id: session?.contactId ?? null
+    })
     changeSession.dismissPrompt('new-event-alerts')
     setIsOpen(false)
   }

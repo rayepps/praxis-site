@@ -1,15 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import URI from 'urijs'
-import parseUrl from 'url-parse'
 import Recoil, { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil'
-import { useRecoilState } from 'recoil'
-import styled from 'styled-components'
-import ComplexQueryString from '../../../util/ComplexQueryString'
 import api from 'src/api'
-import { Stack, Split, Axis } from '../../Layout'
 import * as t from '../../../types'
-import { useFetch, useQuery } from '../../../hooks'
-
+import { useQuery } from '../../../hooks'
 import SearchForm from './SearchForm'
 import EventGrid from 'src/components/ui/EventGrid'
 import SummaryBar from './SummaryBar'
@@ -19,13 +12,17 @@ import { useSearchEvents } from 'src/hooks/useSearchEvents'
 import {
   currentEventIdState,
   currentEventSelector,
+  currentTrainingIdState,
+  currentTrainingSelector,
   eventSearchHashSelector,
   eventSearchOptionsState,
-  eventSearchState,
   eventSearchStateSelector,
-  eventsState
+  eventsState,
+  trainingsState
 } from 'src/state/events'
+import SuggestedAppointmentOnlyTrainings from './SuggestedAppointmentOnlyTrainings'
 import useUrlStateSync from 'src/hooks/useUrlStateSync'
+import TrainingDetailModal from 'src/components/ui/TrainingDetailModal'
 import useAnalytics from 'src/hooks/useAnalytics'
 import np from 'nprogress'
 
@@ -36,7 +33,6 @@ export default function SearchScene() {
   useUrlStateSync()
 
   const analytics = useAnalytics()
-  const topOfListRef = useRef<HTMLDivElement>(null)
   const hash = useRecoilValue(eventSearchHashSelector)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const { page } = useRecoilValue(eventSearchOptionsState)
@@ -44,11 +40,13 @@ export default function SearchScene() {
     onStart: () => np.start(),
     onDone: () => np.done()
   })
-  const listCompanies = useQuery('companies', api.system.listCompanies)
-  const listTags = useQuery('tags', api.system.listTags)
+  const listCompanies = useQuery('companies', api.companies.list)
+  const listTags = useQuery('tags', api.tags.list)
   const searchResults = Recoil.useRecoilValue(eventSearchStateSelector)
   const setCurrentEventId = useSetRecoilState(currentEventIdState)
+  const setCurrentTrainingId = useSetRecoilState(currentTrainingIdState)
   const currentlySelectedEvent = useRecoilValue(currentEventSelector)
+  const currentlySelectedTraining = useRecoilValue(currentTrainingSelector)
 
   const handleEventClick = useRecoilCallback(({ set, snapshot }) => (e: t.Event) => {
     set(currentEventIdState, e.id)
@@ -58,8 +56,17 @@ export default function SearchScene() {
     })
   })
 
+  const handleTrainingClick = useRecoilCallback(({ set, snapshot }) => (t: t.Training) => {
+    set(currentTrainingIdState, t.id)
+    snapshot.getPromise(trainingsState(t.id)).then((training: t.Training | null) => {
+      if (!training) return
+      analytics?.track_training_viewed(training)
+    })
+  })
+
   const closeModal = () => {
     setCurrentEventId(null)
+    setCurrentTrainingId(null)
   }
 
   const toggleFilters = () => {
@@ -76,7 +83,7 @@ export default function SearchScene() {
   }, [])
 
   useEffect(() => {
-    topOfListRef.current?.scrollIntoView()
+    window.scrollTo(0, 0)
   }, [page])
 
   const companies = listCompanies.data?.companies ?? []
@@ -94,13 +101,19 @@ export default function SearchScene() {
         </div>
         <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>
       </div>
+      <TrainingDetailModal training={currentlySelectedTraining} onClose={closeModal} />
       <EventDetailModal event={currentlySelectedEvent} onClose={closeModal} />
-      <div className="w-screen flex flex-row justify-center">
-        <div className="items-start md:pl-4 flex max-w-screen-3xl grow flex-row">
-          <div className="hidden md:block p-4 rounded-xl">
+      <div className="w-screen flex flex-row justify-center pt-4">
+        <div className="items-start flex max-w-screen-3xl grow flex-row">
+          <div className="hidden md:block px-4 pb-4 rounded-xl max-w-xs">
+            <h1 className="font-bold text-4xl mb-2">Search Training Events</h1>
+            <p className="text-sm mb-6">
+              Search US companies providing tier one tactical, medical, and survival training. New trainings and events
+              added every week.
+            </p>
             <SearchForm companies={companies} tags={tags} />
           </div>
-          <div ref={topOfListRef} className="grow px-4 flex flex-col w-full">
+          <div className="grow px-4 flex flex-col w-full">
             <SummaryBar onToggleFilters={toggleFilters} />
             <div className="py-4">
               <EventGrid
@@ -124,6 +137,9 @@ export default function SearchScene() {
               />
             </div>
             <PaginationBar />
+            <div className="mt-6 bg-gray-50 rounded-xl p-10">
+              <SuggestedAppointmentOnlyTrainings onTrainingClick={handleTrainingClick} />
+            </div>
           </div>
         </div>
       </div>

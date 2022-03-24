@@ -65,33 +65,26 @@ const createApi = () => {
       function: 'recentlyPublished'
     })
     },
-    system: {
-      listCompanies: endpoint<
+    companies: {
+      list: endpoint<
         {},
         {
           companies: t.Company[]
         }
       >({
-        module: 'system',
-        function: 'listCompanies'
+        module: 'companies',
+        function: 'list'
       }),
-      getSystemMetadata: endpoint<
-        {},
-        {
-          companies: t.Company[]
-        }
-      >({
-        module: 'system',
-        function: 'metadata'
-      }),
-      listTags: endpoint<
+    },
+    tags: {
+      list: endpoint<
         {},
         {
           tags: t.Tag[]
         }
       >({
-        module: 'system',
-        function: 'listTags'
+        module: 'tags',
+        function: 'list'
       })
     },
     marketing: {
@@ -116,7 +109,25 @@ const createApi = () => {
       }>({
         module: 'marketing',
         function: 'unsubscribe'
+      }),
+      getActiveGiveaway: endpoint<{}, {
+        giveaway: t.Giveaway | null
+      }>({
+        module: 'marketing',
+        function: 'getActiveGiveaway'
       })
+    },
+    trainings: {
+      search: endpoint<
+        t.TrainingSearchOptions,
+        {
+          trainings: t.Training[]
+          total: number
+        }
+      >({
+        module: 'trainings',
+        function: 'search'
+      }),
     }
   }
 }

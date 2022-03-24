@@ -1,9 +1,5 @@
 import { useState } from 'react'
 import Link from 'next/link'
-import { Stack, Center, Split } from '../Layout'
-import TrainingList from '../ui/TrainingList'
-import StatsBlocks from '../ui/StatsBlocks'
-import LabeledImageList from '../ui/LabeledImageList'
 import {
   HiOutlineLocationMarker,
   HiArrowNarrowRight,

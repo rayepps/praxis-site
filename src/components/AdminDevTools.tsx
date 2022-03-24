@@ -23,13 +23,13 @@ export default function AdminDevTools() {
 
   const handleBustCacheChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const shouldSkipCache = event.target.checked
-    storage.skipCache.set(true)
+    storage.skipCache.set(shouldSkipCache)
     setState({ ...state, skipCache: shouldSkipCache })
   }
 
   const handleSkipAnalyticsChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const shouldSkipAnalytics = event.target.checked
-    storage.skipAnalytics.set(true)
+    storage.skipAnalytics.set(shouldSkipAnalytics)
     setState({ ...state, skipAnalytics: shouldSkipAnalytics })
   }
 

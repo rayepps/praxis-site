@@ -9,16 +9,16 @@ export default function SummaryBar({ onToggleFilters }: { onToggleFilters?: () =
   
   const { page, pageSize, order } = options
 
-  const onChange = (newOrder: t.SearchOrder) => {
+  const onChange = (newOrder: t.EventSearchOrder) => {
     setOptions({ ...options, order: newOrder })
   }
-  const orderOptions: { label: string; value: t.SearchOrder }[] = [
+  const orderOptions: { label: string; value: t.EventSearchOrder }[] = [
     { label: 'Date - Today First', value: 'date:asc' },
     { label: 'Date - Today Last', value: 'date:desc' },
     { label: 'Price - Lowest First', value: 'price:asc' },
     { label: 'Price - Lowest Last', value: 'price:desc' }
   ]
-  const start = ((page - 1) * pageSize) || 1
+  const start = total === 0 ? 0 : ((page - 1) * pageSize) || 1
   return (
     <div className="flex flex-row items-center">
       <div className="md:hidden">

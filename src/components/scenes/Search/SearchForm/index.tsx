@@ -1,7 +1,6 @@
 import _ from 'radash'
 import { useState } from 'react'
 import * as t from 'src/types'
-import { Stack, Split } from 'src/components/Layout'
 import { US_STATES } from 'src/const'
 import { HiX } from 'react-icons/hi'
 import addDays from 'date-fns/addDays'
@@ -160,7 +159,7 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
   })()
 
   return (
-    <Stack className="w-64">
+    <div className="flex flex-col">
       {/* TYPE */}
       <div className="mb-6">
         <FilterLabel className="mb-1">Type</FilterLabel>
@@ -183,7 +182,7 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
       {/* COMPANY */}
       <div className="mb-6">
         <FilterLabel className="mb-1">Company</FilterLabel>
-        <Split>
+        <div className="flex flex-row">
           <SelectMenu
             title="Company"
             options={companies.map(c => ({ label: c.name, value: c.slug }))}
@@ -196,12 +195,12 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
             </button>
           </SelectMenu>
           <ClearFilterButton disabled={!options.company} onClick={clearCompany} />
-        </Split>
+        </div>
       </div>
       {/* STATE */}
       <div className="mb-6">
         <FilterLabel className="mb-1">State</FilterLabel>
-        <Split>
+        <div className="flex flex-row">
           <SelectMenu
             title="State"
             options={Object.entries(US_STATES).map(([abbv, name]) => ({ label: name, value: abbv }))}
@@ -214,7 +213,7 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
             </button>
           </SelectMenu>
           <ClearFilterButton disabled={!options.state} onClick={clearState} />
-        </Split>
+        </div>
       </div>
       {/* DATES */}
       <div className="mb-6">
@@ -239,7 +238,7 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
       {/* TAGS */}
       <div className="mb-6">
         <FilterLabel className="mb-1">Tags</FilterLabel>
-        <Split>
+        <div className="flex flex-row">
           <SelectMenu
             title="Tags"
             options={tags.map(tag => ({ label: tag.name, value: tag.slug }))}
@@ -250,7 +249,7 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
             <button className="py-1 grow border border-black rounded">Select tag</button>
           </SelectMenu>
           <ClearFilterButton disabled={!options.tags?.length} onClick={clearTags} />
-        </Split>
+        </div>
         <div>
           {options.tags?.map(tagSlug => {
             const tag = tags.find(t => t.slug === tagSlug)
@@ -267,7 +266,7 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
           reset
         </button>
       </div>
-    </Stack>
+    </div>
   )
 }
 

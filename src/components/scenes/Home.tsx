@@ -1,13 +1,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
-import { Stack, Center, Split } from '../Layout'
-import TrainingList from '../ui/TrainingList'
-import StatsBlocks from '../ui/StatsBlocks'
-import LabeledImageList from '../ui/LabeledImageList'
 import {
   HiOutlineLocationMarker,
   HiArrowNarrowRight,
-  HiOutlineMailOpen,
   HiOutlineTag,
   HiOutlineBell,
   HiOutlineCash
@@ -22,7 +17,7 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
       {/* HERO */}
       <div className="px-2 md:px-8 py-20 items-center justify-center lg:flex lg:flex-row">
         <div className="max-w-6xl lg:flex lgflex-row">
-          <Stack className="grow px-4 justify-center mb-24 md:mb-0">
+          <div className="flex flex-col grow px-4 justify-center mb-24 md:mb-0">
             <div>
               <h1 className="text-5xl font-bold mb-4 md:text-7xl">
                 Tactical <br />
@@ -46,7 +41,7 @@ export default function HomeScene({ featuredEvents }: { featuredEvents: t.Event[
                 </a>
               </Link>
             </div>
-          </Stack>
+          </div>
           <EventTrainingPreviewBlocks events={featuredEvents} />
         </div>
       </div>
@@ -179,7 +174,7 @@ const EventTrainingPreviewBlocks = ({ events }: { events: t.Event[] }) => {
                   backgroundImage: `url('${getBestImageUrl(event)}')`
                 }}
               ></div>
-              <Stack className="p-4 max-w-[224px]">
+              <div className="flex flex-col p-4 max-w-[224px]">
                 <span className="font-bold text-2xl inline-block">{event.name}</span>
                 <span className="text-base text-gray-400 inline-block">{event.training.company.name}</span>
                 <div className="pt-2 grow">
@@ -198,7 +193,7 @@ const EventTrainingPreviewBlocks = ({ events }: { events: t.Event[] }) => {
                 <div className="flex-row hidden lg:flex absolute animate-fade-in transition-opacity transition-[right] opacity-0 group-hover:opacity-100 right-[-60px] group-hover:right-[-65px] top-1/2 items-center">
                   <HiArrowNarrowRight size={20} />
                 </div>
-              </Stack>
+              </div>
             </div>
           </a>
         </Link>
@@ -220,7 +215,7 @@ const AddContactForm = ({ form }: { form: 'partner' | 'early-access' }) => {
   const isValid = email?.length > 0 && email.includes('@')
   return (
     <div>
-      <Split className="items-stretch mt-6">
+      <div className="flex flex-row items-stretch mt-6">
         <input
           className="mr-4 grow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="email"
@@ -239,7 +234,7 @@ const AddContactForm = ({ form }: { form: 'partner' | 'early-access' }) => {
             </div>
           )}
         </button>
-      </Split>
+      </div>
       {addContactRequest.error && <span className="text-red-600">{addContactRequest.error.details}</span>}
       {showToast && (
         <div

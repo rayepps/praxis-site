@@ -1,4 +1,4 @@
-import { Analytics as SegmentAnalytics, AnalyticsBrowser } from '@segment/analytics-next'
+import { Analytics as SegmentAnalytics } from '@segment/analytics-next'
 import * as t from 'src/types'
 
 const track = <T>(key: string, analytics: SegmentAnalytics, mapper: (arg: T) => any) => {
@@ -8,6 +8,12 @@ const track = <T>(key: string, analytics: SegmentAnalytics, mapper: (arg: T) => 
       type: 'track',
       properties: mapper(data)
     })
+  }
+}
+
+const page = <T>(analytics: SegmentAnalytics) => {
+  return (key: string, metadata: t.ContactMetadata) => {
+    analytics.page(key, metadata)
   }
 }
 
@@ -21,7 +27,16 @@ export const makeAnalytics = (analytics: SegmentAnalytics) => ({
     training_id: event.training.id,
     training_name: event.training.name
   })),
-  track_alerts_subscription: track('user.subscribed.event-alerts', analytics, (data: t.ContactMetadata & { contact_id: string }) => data)
+  track_training_viewed: track('user.viewed.training', analytics, (training: t.Training) => ({
+    company_id: training.company.id,
+    company_name: training.company.name,
+    domain: new URL(training.company.directLink).hostname,
+    training_id: training.id,
+    training_name: training.name
+  })),
+  track_alerts_subscription: track('user.subscribed.event-alerts', analytics, (data: t.ContactMetadata & { contact_id: string }) => data),
+  track_dismiss_alerts_subscription: track('user.dismissed.event-alerts-prompt', analytics, (data: t.ContactMetadata & { contact_id: string | null }) => data),
+  track_page: page(analytics)
 })
 
 export type PraxisAnalytics = ReturnType<typeof makeAnalytics>

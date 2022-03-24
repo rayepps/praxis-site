@@ -2,7 +2,6 @@ import React, { SyntheticEvent, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Pane, Heading, majorScale, IconButton } from 'evergreen-ui'
 import { HiX } from 'react-icons/hi'
-import { Center, Split } from 'src/components/Layout'
 import theme from 'src/theme'
 import { createGlobalStyle } from 'styled-components'
 

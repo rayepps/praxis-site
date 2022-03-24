@@ -1,7 +1,6 @@
 import _ from 'radash'
 import formatDate from 'date-fns/format'
 import * as t from 'src/types'
-import { Center, Split } from '../Layout'
 import HorizontalGallery from 'src/components/ui/HorizontalGallery'
 import { HiX, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineCurrencyDollar } from 'react-icons/hi'
 

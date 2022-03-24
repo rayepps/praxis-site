@@ -1,4 +1,3 @@
-import { Center } from '../Layout'
 
 export default function Footer() {
   return (

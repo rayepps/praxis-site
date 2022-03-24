@@ -6,19 +6,21 @@ import { subscribeModalOpenState } from 'src/state/app'
 
 export default function Header({
   showTrainingsLink = true,
-  showBell = false  
+  showBell = false,
+  dark = false
 }: {
   showTrainingsLink?: boolean
   showBell?: boolean
+  dark?: boolean
 }) {
   const setSubscribeModalOpen = useSetRecoilState(subscribeModalOpenState)
   return (
-    <div className="w-screen flex flex-row justify-center">
+    <div className={`w-screen flex flex-row justify-center ${dark && 'bg-black'}`}>
       <div className="p-4 items-center flex flex-row grow max-w-screen-3xl w-full">
-        <div className="grow">
+        <div className="grow flex flex-row items-center">
           <Link href="/" passHref>
             <a>
-              <Wordmark height={18} className="inline-block" />
+              <Wordmark height={13} className="inline-block" color={dark ? '#FFFFFF' : '#000000'} />
             </a>
           </Link>
         </div>
@@ -35,23 +37,6 @@ export default function Header({
               </a>
             </Link>
           )}
-          {/* <Link href="/about" passHref>
-          <a
-            className="text-black font-bold"
-          >
-            About
-          </a>
-        </Link> */}
-          {/* <EvergreenLink
-          href="https://shop.praxisco.us"
-          padding={minorScale(2)}
-          backgroundColor={theme.colors.black.hex()}
-          style={{
-            color: theme.colors.white.hex()
-          }}
-        >
-          shop
-        </EvergreenLink> */}
         </div>
       </div>
     </div>

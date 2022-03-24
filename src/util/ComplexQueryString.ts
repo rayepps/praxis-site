@@ -25,7 +25,7 @@ const typify = (obj: Record<string, any>, overrides: Record<string, (str: string
  * Converts an object into a complex query
  * string. Does not handle arrays of objects.
  */
-const serialize = (obj: Record<string, string | number | undefined | null>): string => {
+const serialize = (obj: Record<string, string | number | undefined | boolean | null>): string => {
   const allStrings = _.mapValues(_.shake(obj), v => `${v}`)
   return new URLSearchParams(allStrings).toString()
 }

@@ -1,4 +1,3 @@
-import { Center } from 'src/components/Layout'
 import { Pagination } from 'evergreen-ui'
 import Recoil from 'recoil'
 import { eventSearchOptionsState, eventSearchState } from 'src/state/events'
@@ -31,7 +30,7 @@ export default function PaginationBar() {
     })
   }
   return (
-    <Center className="py-4">
+    <div className="flex flex-col items-center justify-center py-4">
       <Pagination
         page={page}
         totalPages={totalPages}
@@ -39,6 +38,6 @@ export default function PaginationBar() {
         onPreviousPage={onPrevious}
         onPageChange={onChange}
       />
-    </Center>
+    </div>
   )
 }

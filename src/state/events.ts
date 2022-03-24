@@ -5,12 +5,25 @@ import ComplexQueryString from 'src/util/ComplexQueryString'
 import * as uuid from 'uuid'
 
 export const eventsState = atomFamily({
-  key: 'px.events',
+  key: 'eventsState',
   default: null as t.Event | null
+})
+
+export const trainingsState = atomFamily({
+  key: 'trainingsState',
+  default: null as t.Training | null
 })
 
 export const eventSearchState = atom({
   key: 'eventSearchState',
+  default: {
+    total: 0,
+    results: [] as string[]
+  }
+})
+
+export const trainingSearchState = atom({
+  key: 'trainingSearchState',
   default: {
     total: 0,
     results: [] as string[]
@@ -27,6 +40,11 @@ export const eventSearchStateSelector = selector<t.Event[]>({
 
 export const currentEventIdState = atom<null | string>({
   key: 'currentEventIdState',
+  default: null
+})
+
+export const currentTrainingIdState = atom<null | string>({
+  key: 'currentTrainingIdState',
   default: null
 })
 
@@ -76,5 +94,39 @@ export const currentEventSelector = selector<t.Event | null>({
     const eventId = get(currentEventIdState)
     if (!eventId) return null
     return get(eventsState(eventId)) ?? null
+  }
+})
+
+export const currentTrainingSelector = selector<t.Training | null>({
+  key: 'currentTrainingSelector',
+  get: ({ get }) => {
+    const trainingId = get(currentTrainingIdState)
+    if (!trainingId) return null
+    return get(trainingsState(trainingId)) ?? null
+  }
+})
+
+export const eventSearchBasedTrainingOptionsSelector = selector<t.TrainingSearchOptions>({
+  key: 'eventSearchBasedTrainingOptionsSelector',
+  get: ({ get }) => {
+    const eventOptions = get(eventSearchOptionsState)
+    return {
+      pageSize: 6, // always limit to 6 when event search based
+      page: 1, // always limit to first page when event search based
+      order: eventOptions.order as t.TrainingSearchOrder,
+      type: eventOptions.type,
+      tags: eventOptions.tags,
+      state: eventOptions.state,
+      city: eventOptions.city,
+      company: eventOptions.company,
+      appointmentOnly: true // always true when event search based
+    }
+  }
+})
+
+export const eventSearchBasedTrainingHashSelector = selector<string>({
+  key: 'eventSearchBasedTrainingHashSelector',
+  get: ({ get }) => {
+    return uuid.v5(get(eventSearchUrlQuerySelector), uuid.v5.DNS)
   }
 })

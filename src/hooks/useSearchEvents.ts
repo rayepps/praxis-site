@@ -25,7 +25,7 @@ export const useSearchEvents = ({
   onDone?: () => void
 } = {}) => {
   const hash = useRecoilValue(eventSearchHashSelector)
-  const searchEvents = useQuery(`search.${hash}`, api.events.search)
+  const searchEvents = useQuery(`search.events.${hash}`, api.events.search)
   const options = useRecoilValue(eventSearchOptionsState)
   const setSearchResults = useRecoilCallback(({ set, snapshot }) => async (data: { total: number; events: t.Event[] }) => {
     for (const event of data.events) {

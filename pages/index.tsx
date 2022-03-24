@@ -32,7 +32,7 @@ const Home: NextPage<Props> = ({ featuredEvents }) => {
           thumbnailUrl='https://praxisco.us/preview.png'
         />
       </Head>
-      <Header />
+      <Header showTrainingsLink />
       <HomeScene 
         featuredEvents={featuredEvents}
       />

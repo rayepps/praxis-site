@@ -4,6 +4,7 @@ export type TrainingType = 'tactical' | 'medical' | 'survival'
 
 export type EventSearchOrder = 'date:asc' | 'date:desc' | 'price:asc' | 'price:desc'
 export type TrainingSearchOrder = 'price:asc' | 'price:desc'
+export type EventSearchFilterFields = 'company' | 'date' | 'tags' | 'type' | 'state'
 
 export type PriceUnit = 'per_training' | 'per_hour'
 
@@ -18,6 +19,14 @@ export interface EventSearchOptions {
   company?: string
   date?: string
   appointmentOnly?: boolean
+
+  // We track which fields are being overriden. In this use case
+  // overriden referrs to a component using the EventSearchForm or
+  // EventSearchScene to override options typically selected by a
+  // user in the filters panel. This allows us to filter the
+  // overrided values out when generating the query string and
+  // add them back in when calculating the has for a option set.
+  overrides?: EventSearchFilterFields[]
 }
 
 export type TrainingSearchOptions = Omit<EventSearchOptions, 'date' | 'order'> & {

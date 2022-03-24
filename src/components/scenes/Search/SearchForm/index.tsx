@@ -1,25 +1,41 @@
 import _ from 'radash'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as t from 'src/types'
 import { US_STATES } from 'src/const'
 import { HiX } from 'react-icons/hi'
-import addDays from 'date-fns/addDays'
-import startOfMonth from 'date-fns/startOfMonth'
-import getDate from 'date-fns/getDate'
-import addMonths from 'date-fns/addMonths'
-import getMonth from 'date-fns/getMonth'
 import parseDate from 'date-fns/parse'
 import formatDate from 'date-fns/format'
 import endOfMonth from 'date-fns/endOfMonth'
-import getYear from 'date-fns/getYear'
-import { Checkbox, SelectMenu, IconButton, Popover, Position } from 'evergreen-ui'
+import { Checkbox, SelectMenu, Popover, Position } from 'evergreen-ui'
 import Recoil from 'recoil'
 import { eventSearchOptionsState } from 'src/state/events'
 import DateRange from 'src/components/ui/DateRange'
 
-export default function SearchForm({ tags, companies }: { tags: t.Tag[]; companies: t.Company[] }) {
+const allFilterFields: t.EventSearchFilterFields[] = ['company', 'date', 'tags', 'type', 'state']
+
+export default function SearchForm({
+  tags,
+  companies,
+  filters: filterFieldList = allFilterFields,
+  overrides
+}: {
+  tags: t.Tag[]
+  companies: t.Company[]
+  filters?: t.EventSearchFilterFields[]
+  overrides?: Partial<t.EventSearchOptions>
+}) {
   const [options, setOptions] = Recoil.useRecoilState(eventSearchOptionsState)
   const [showDateRange, setShowDateRange] = useState(false)
+
+  const filters = _.objectify(filterFieldList, x => x)
+  useEffect(() => {
+    if (!overrides) return
+    setOptions({
+      ...options,
+      ...overrides,
+      overrides: Object.keys(overrides) as any
+    })
+  }, [overrides])
 
   const setType = (type: t.TrainingType) =>
     setOptions({
@@ -160,107 +176,112 @@ export default function SearchForm({ tags, companies }: { tags: t.Tag[]; compani
 
   return (
     <div className="flex flex-col">
-      {/* TYPE */}
-      <div className="mb-6">
-        <FilterLabel className="mb-1">Type</FilterLabel>
-        <Checkbox
-          label="Tactical"
-          checked={options.type === 'tactical'}
-          onChange={e => (e.target.checked ? setType('tactical') : clearType())}
-        />
-        <Checkbox
-          label="Survival"
-          checked={options.type === 'survival'}
-          onChange={e => (e.target.checked ? setType('survival') : clearType())}
-        />
-        <Checkbox
-          label="Medical"
-          checked={options.type === 'medical'}
-          onChange={e => (e.target.checked ? setType('medical') : clearType())}
-        />
-      </div>
-      {/* COMPANY */}
-      <div className="mb-6">
-        <FilterLabel className="mb-1">Company</FilterLabel>
-        <div className="flex flex-row">
-          <SelectMenu
-            title="Company"
-            options={companies.map(c => ({ label: c.name, value: c.slug }))}
-            selected={options.company}
-            filterPlaceholder="Choose company"
-            onSelect={item => updateCompany(item.value as string)}
-          >
-            <button className="grow border border-black rounded">
-              {options.company ? companies.find(c => c.slug === options.company)?.name : 'Select company'}
+      {filters.type && (
+        <div className="mb-6">
+          <FilterLabel className="mb-1">Type</FilterLabel>
+          <Checkbox
+            label="Tactical"
+            checked={options.type === 'tactical'}
+            onChange={e => (e.target.checked ? setType('tactical') : clearType())}
+          />
+          <Checkbox
+            label="Survival"
+            checked={options.type === 'survival'}
+            onChange={e => (e.target.checked ? setType('survival') : clearType())}
+          />
+          <Checkbox
+            label="Medical"
+            checked={options.type === 'medical'}
+            onChange={e => (e.target.checked ? setType('medical') : clearType())}
+          />
+        </div>
+      )}
+      {filters.company && (
+        <div className="mb-6">
+          <FilterLabel className="mb-1">Company</FilterLabel>
+          <div className="flex flex-row">
+            <SelectMenu
+              title="Company"
+              options={companies.map(c => ({ label: c.name, value: c.slug }))}
+              selected={options.company}
+              filterPlaceholder="Choose company"
+              onSelect={item => updateCompany(item.value as string)}
+            >
+              <button className="grow border border-black rounded">
+                {options.company ? companies.find(c => c.slug === options.company)?.name : 'Select company'}
+              </button>
+            </SelectMenu>
+            <ClearFilterButton disabled={!options.company} onClick={clearCompany} />
+          </div>
+        </div>
+      )}
+      {filters.state && (
+        <div className="mb-6">
+          <FilterLabel className="mb-1">State</FilterLabel>
+          <div className="flex flex-row">
+            <SelectMenu
+              title="State"
+              options={Object.entries(US_STATES).map(([abbv, name]) => ({ label: name, value: abbv }))}
+              selected={options.state}
+              filterPlaceholder="Choose state"
+              onSelect={item => updateState(item.value as string)}
+            >
+              <button className="grow border border-black rounded">
+                {options.state ? US_STATES[options.state] : 'Select state'}
+              </button>
+            </SelectMenu>
+            <ClearFilterButton disabled={!options.state} onClick={clearState} />
+          </div>
+        </div>
+      )}
+      {filters.date && (
+        <div className="mb-6">
+          <FilterLabel className="mb-1">Dates</FilterLabel>
+          <div className="flex flex-row">
+            <button
+              className="border grow border-black rounded p-1 w-full text-center"
+              onClick={() => setShowDateRange(!showDateRange)}
+            >
+              {options.date ? formatDateDisplay() : 'Select Dates'}
             </button>
-          </SelectMenu>
-          <ClearFilterButton disabled={!options.company} onClick={clearCompany} />
-        </div>
-      </div>
-      {/* STATE */}
-      <div className="mb-6">
-        <FilterLabel className="mb-1">State</FilterLabel>
-        <div className="flex flex-row">
-          <SelectMenu
-            title="State"
-            options={Object.entries(US_STATES).map(([abbv, name]) => ({ label: name, value: abbv }))}
-            selected={options.state}
-            filterPlaceholder="Choose state"
-            onSelect={item => updateState(item.value as string)}
+            <ClearFilterButton disabled={!options.date} onClick={clearDate} />
+          </div>
+          <Popover
+            position={Position.BOTTOM_LEFT}
+            isShown={showDateRange}
+            content={<DateRange value={getDateRangeValue()} onChange={handleDateRange} />}
           >
-            <button className="grow border border-black rounded">
-              {options.state ? US_STATES[options.state] : 'Select state'}
-            </button>
-          </SelectMenu>
-          <ClearFilterButton disabled={!options.state} onClick={clearState} />
+            <div></div>
+          </Popover>
         </div>
-      </div>
-      {/* DATES */}
-      <div className="mb-6">
-        <FilterLabel className="mb-1">Dates</FilterLabel>
-        <div className="flex flex-row">
-          <button
-            className="border grow border-black rounded p-1 w-full text-center"
-            onClick={() => setShowDateRange(!showDateRange)}
-          >
-            {options.date ? formatDateDisplay() : 'Select Dates'}
-          </button>
-          <ClearFilterButton disabled={!options.date} onClick={clearDate} />
+      )}
+      {filters.tags && (
+        <div className="mb-6">
+          <FilterLabel className="mb-1">Tags</FilterLabel>
+          <div className="flex flex-row">
+            <SelectMenu
+              title="Tags"
+              options={tags.map(tag => ({ label: tag.name, value: tag.slug }))}
+              selected={options.tags}
+              filterPlaceholder="Choose tags"
+              onSelect={item => addTag(item.value as string)}
+            >
+              <button className="py-1 grow border border-black rounded">Select tag</button>
+            </SelectMenu>
+            <ClearFilterButton disabled={!options.tags?.length} onClick={clearTags} />
+          </div>
+          <div>
+            {options.tags?.map(tagSlug => {
+              const tag = tags.find(t => t.slug === tagSlug)
+              return tag && <Checkbox key={tagSlug} checked label={tag.name} onChange={() => removeTag(tag)} />
+            })}
+          </div>
         </div>
-        <Popover
-          position={Position.BOTTOM_LEFT}
-          isShown={showDateRange}
-          content={<DateRange value={getDateRangeValue()} onChange={handleDateRange} />}
-        >
-          <div></div>
-        </Popover>
-      </div>
-      {/* TAGS */}
-      <div className="mb-6">
-        <FilterLabel className="mb-1">Tags</FilterLabel>
-        <div className="flex flex-row">
-          <SelectMenu
-            title="Tags"
-            options={tags.map(tag => ({ label: tag.name, value: tag.slug }))}
-            selected={options.tags}
-            filterPlaceholder="Choose tags"
-            onSelect={item => addTag(item.value as string)}
-          >
-            <button className="py-1 grow border border-black rounded">Select tag</button>
-          </SelectMenu>
-          <ClearFilterButton disabled={!options.tags?.length} onClick={clearTags} />
-        </div>
-        <div>
-          {options.tags?.map(tagSlug => {
-            const tag = tags.find(t => t.slug === tagSlug)
-            return tag && <Checkbox key={tagSlug} checked label={tag.name} onChange={() => removeTag(tag)} />
-          })}
-        </div>
-      </div>
+      )}
       <div className="pt-4 flex flex-row justify-center">
-        <button 
-          disabled={!hasFiltersSet} 
-          onClick={resetOptions} 
+        <button
+          disabled={!hasFiltersSet}
+          onClick={resetOptions}
           className="font-bold text-sm text-black hover:text-red-600 disabled:text-slate-200 disabled:hover:text-slate-200"
         >
           reset

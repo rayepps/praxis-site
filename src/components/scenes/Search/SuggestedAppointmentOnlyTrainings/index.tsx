@@ -34,8 +34,7 @@ export default function SuggestedAppointmentOnlyTrainings({
     <div>
       <h4 className="text-4xl font-bold pb-2">Appointment Only</h4>
       <p className="text-xl max-w-prose">
-        Here are trainings that match your filters but do not have set event dates. You can call or email these companies to
-        schedule a session.
+        These trainings match your filters but do not have set event dates. They do offer courses by appointments. Call or email to start training.
       </p>
       <div className="mt-10">
         <TrainingGrid trainings={trainings} onTrainingClick={onTrainingClick} />

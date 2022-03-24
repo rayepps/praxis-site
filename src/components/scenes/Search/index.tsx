@@ -29,7 +29,19 @@ import np from 'nprogress'
 import 'react-date-range/dist/styles.css' // main style file
 import 'react-date-range/dist/theme/default.css' // theme css file
 
-export default function SearchScene() {
+export default function SearchScene({
+  title,
+  thumbnail,
+  info,
+  filters,
+  overrides
+}: {
+  title?: string
+  thumbnail?: string
+  info?: string
+  filters?: t.EventSearchFilterFields[]
+  overrides?: Partial<t.EventSearchOptions>
+}) {
   useUrlStateSync()
 
   const analytics = useAnalytics()
@@ -97,21 +109,18 @@ export default function SearchScene() {
         } top-0 left-0 w-screen h-screen bg-black-opaque z-[9] flex-row`}
       >
         <div className="max-w-screen-sm h-screen bg-white p-6">
-          <SearchForm companies={companies} tags={tags} />
+          <SearchForm companies={companies} tags={tags} filters={filters} overrides={overrides} />
         </div>
         <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>
       </div>
       <TrainingDetailModal training={currentlySelectedTraining} onClose={closeModal} />
       <EventDetailModal event={currentlySelectedEvent} onClose={closeModal} />
+      <SceneInfo title={title} info={info} thumbnail={thumbnail} className="block md:hidden mt-4 pl-4" />
       <div className="w-screen flex flex-row justify-center pt-4">
         <div className="items-start flex max-w-screen-3xl grow flex-row">
           <div className="hidden md:block px-4 pb-4 rounded-xl max-w-xs">
-            <h1 className="font-bold text-4xl mb-2">Search Training Events</h1>
-            <p className="text-sm mb-6">
-              Search US companies providing tier one tactical, medical, and survival training. New trainings and events
-              added every week.
-            </p>
-            <SearchForm companies={companies} tags={tags} />
+            <SceneInfo title={title} info={info} thumbnail={thumbnail} className="hidden md:block" />
+            <SearchForm companies={companies} tags={tags} filters={filters} overrides={overrides} />
           </div>
           <div className="grow px-4 flex flex-col w-full">
             <SummaryBar onToggleFilters={toggleFilters} />
@@ -137,12 +146,38 @@ export default function SearchScene() {
               />
             </div>
             <PaginationBar />
-            <div className="mt-6 bg-gray-50 rounded-xl p-10">
+            <div className="mt-6 bg-gray-50 rounded-xl p-4 md:p-10">
               <SuggestedAppointmentOnlyTrainings onTrainingClick={handleTrainingClick} />
             </div>
           </div>
         </div>
       </div>
     </>
+  )
+}
+
+const SceneInfo = ({
+  thumbnail,
+  title,
+  info,
+  className
+}: {
+  thumbnail?: string
+  title?: string
+  info?: string
+  className?: string
+}) => {
+  return (
+    <div className={className}>
+      {thumbnail && <img src={thumbnail} className="w-36 mb-4" />}
+      <h1 className="font-bold text-4xl mb-2">{title ?? 'Search Training Events'}</h1>
+      <p className="text-sm mb-6 max-w-prose">
+        {info ??
+          `
+            Search US companies providing tier one tactical, medical, and survival training. New trainings and events
+            added every week.
+          `}
+      </p>
+    </div>
   )
 }

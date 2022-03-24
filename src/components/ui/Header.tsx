@@ -5,13 +5,15 @@ import { useSetRecoilState } from 'recoil'
 import { subscribeModalOpenState } from 'src/state/app'
 
 export default function Header({
-  showTrainingsLink = true,
+  showTrainingsLink = false,
   showBell = false,
-  dark = false
+  dark = false,
+  trainingLinkLabel
 }: {
   showTrainingsLink?: boolean
   showBell?: boolean
-  dark?: boolean
+  dark?: boolean,
+  trainingLinkLabel?: string
 }) {
   const setSubscribeModalOpen = useSetRecoilState(subscribeModalOpenState)
   return (
@@ -32,8 +34,8 @@ export default function Header({
           )}
           {showTrainingsLink && (
             <Link href="/search" passHref>
-              <a className="text-white bg-black rounded-md p-2 text-base inline-block">
-                <span className="font-bold">Trainings</span>
+              <a className={`${dark ? 'text-black bg-white' : 'text-white bg-black'} rounded-md p-2 text-base inline-block`}>
+                <span className="font-bold">{trainingLinkLabel ?? 'Trainings'}</span>
               </a>
             </Link>
           )}

@@ -63,6 +63,13 @@ export const eventSearchUrlQuerySelector = selector<string>({
   key: 'eventSearchUrlQuerySelector',
   get: ({ get }) => {
     const options = get(eventSearchOptionsState)
+    // Build an object with keys as option key names
+    // and values as undefined and apply it to the
+    // object to force out those values from the query
+    // string.
+    const overrides = options.overrides
+      ? _.mapValues(_.objectify(options.overrides, o => o), _v => undefined)
+      : {}
     return ComplexQueryString.serialize({
       ...options,
       // If the page is at default, no need to add it to the query
@@ -70,7 +77,9 @@ export const eventSearchUrlQuerySelector = selector<string>({
       page: options.page === 1 ? undefined : options.page,
       pageSize: options.pageSize === 25 ? undefined : options.pageSize,
       // Flatten tags to a ; seperated string if they exist
-      tags: options.tags?.join(';') ?? undefined
+      tags: options.tags?.join(';') ?? undefined,
+      overrides: undefined,
+      ...overrides
     })
   }
 })
@@ -84,7 +93,10 @@ export const eventSearchUrlQuerySelector = selector<string>({
 export const eventSearchHashSelector = selector<string>({
   key: 'eventSearchHashSelector',
   get: ({ get }) => {
-    return uuid.v5(get(eventSearchUrlQuerySelector), uuid.v5.DNS)
+    return uuid.v5(JSON.stringify({
+      qs: get(eventSearchUrlQuerySelector),
+      overrides: get(eventSearchOptionsState).overrides
+    }), uuid.v5.DNS)
   }
 })
 

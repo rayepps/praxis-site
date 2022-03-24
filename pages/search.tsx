@@ -16,7 +16,7 @@ const SearchPage: NextPage = () => {
           thumbnailUrl='https://praxisco.us/preview.png'
         />
       </Head >
-      <Header showTrainingsLink={false} dark />
+      <Header dark />
       <SearchScene />
       <Footer />
       <MarketingPrompts />

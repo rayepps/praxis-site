@@ -144,6 +144,17 @@ export interface Subscription {
   phone?: string
 }
 
+export interface Contact {
+  id: string
+  email: string
+  phone?: string
+  tags: string[]
+  supressions: {
+    timestamp: number
+    campaign: string
+  }[]
+}
+
 export interface ContactMetadata {
   ipAddress: string
   city: string

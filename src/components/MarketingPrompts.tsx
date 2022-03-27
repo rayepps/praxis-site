@@ -15,12 +15,11 @@ import useFetch from '../hooks/data-store/useFetch'
 import api from 'src/api'
 import useTrackedSession from 'src/hooks/useTrackedSession'
 
-
 export default function MarketingPrompts () {
   const [isOpen, setIsOpen] = useRecoilState(subscribeModalOpenState)
   const [session, changeSession] = useTrackedSession()
   const analytics = useAnalytics()
-  const subscribeRequest = useFetch(api.marketing.subscribe)
+  const addContactRequest = useFetch(api.marketing.addContact)
 
   useEffect(() => {
     if (!session) return
@@ -44,7 +43,7 @@ export default function MarketingPrompts () {
     }, 5000)
   }
   const subscribe = async (email: string) => {
-    const { error, data } = await subscribeRequest.fetch({ email })
+    const { error, data } = await addContactRequest.fetch({ email, source: 'site.subscribe.popup' })
     if (error) {
       console.error(error)
       toaster.danger(error.details)
@@ -73,7 +72,7 @@ export default function MarketingPrompts () {
       <TinySubscribeToAlertsModal
         open={isOpen}
         subscribed={!!session?.subscriptions.find(s => s.key === 'new-event-alerts')}
-        loading={subscribeRequest.loading}
+        loading={addContactRequest.loading}
         onSubmit={subscribe}
         onClose={dismissModal}
       />

@@ -54,16 +54,16 @@ const createApi = () => {
         function: 'find-by-slug'
       }),
       recentlyPublished: endpoint<
-      {
-        limit: number
-      },
-      {
-        events: t.Event[]
-      }
-    >({
-      module: 'events',
-      function: 'recently-published'
-    })
+        {
+          limit: number
+        },
+        {
+          events: t.Event[]
+        }
+      >({
+        module: 'events',
+        function: 'recently-published'
+      })
     },
     companies: {
       list: endpoint<
@@ -74,7 +74,7 @@ const createApi = () => {
       >({
         module: 'companies',
         function: 'list'
-      }),
+      })
     },
     tags: {
       list: endpoint<
@@ -88,31 +88,31 @@ const createApi = () => {
       })
     },
     marketing: {
-      addContact: endpoint<{ email: string; source: string }, {}>({
+      addContact: endpoint<
+        { email: string; source: 'site.partner.form' | 'site.contact.form' | 'site.subscribe.popup' },
+        { contact: t.Contact }
+      >({
         module: 'marketing',
         function: 'add-contact'
       }),
-      subscribe: endpoint<{ email: string; }, {
-        contact: {
-          id: string
-          email: string
+      unsubscribe: endpoint<
+        { id: string },
+        {
+          contact: {
+            id: string
+            email: string
+          }
         }
-      }>({
-        module: 'marketing',
-        function: 'subscribe'
-      }),
-      unsubscribe: endpoint<{ id: string; }, {
-        contact: {
-          id: string
-          email: string
-        }
-      }>({
+      >({
         module: 'marketing',
         function: 'unsubscribe'
       }),
-      getActiveGiveaway: endpoint<{}, {
-        giveaway: t.Giveaway | null
-      }>({
+      getActiveGiveaway: endpoint<
+        {},
+        {
+          giveaway: t.Giveaway | null
+        }
+      >({
         module: 'marketing',
         function: 'get-active-giveaway'
       })
@@ -127,7 +127,7 @@ const createApi = () => {
       >({
         module: 'trainings',
         function: 'search'
-      }),
+      })
     }
   }
 }

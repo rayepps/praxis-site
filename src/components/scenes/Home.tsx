@@ -207,7 +207,10 @@ const AddContactForm = ({ form }: { form: 'partner' | 'early-access' }) => {
   const [email, setEmail] = useState('')
   const [showToast, setShowToast] = useState(false)
   const handleFormSubmission = async () => {
-    const { error } = await addContactRequest.fetch({ email, source: form })
+    const { error } = await addContactRequest.fetch({ 
+      email, 
+      source: form === 'partner' ? 'site.partner.form' : 'site.contact.form'
+    })
     if (error) return
     setShowToast(true)
     setTimeout(() => setShowToast(false), 5000)

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import TrainingGrid from 'src/components/ui/TrainingGrid'
 import { useEventBasedSearchTrainings } from 'src/hooks/useEventBasedSearchTrainings'
-import { eventSearchBasedTrainingHashSelector, eventSearchOptionsState } from 'src/state/events'
+import { eventSearchBasedTrainingHashSelector } from 'src/state/events'
 import * as t from 'src/types'
 
 export default function SuggestedAppointmentOnlyTrainings({

@@ -33,11 +33,9 @@ export default function Header({
             </button>
           )}
           {showTrainingsLink && (
-            <Link href="/search" passHref>
-              <a className={`${dark ? 'text-black bg-white' : 'text-white bg-black'} rounded-md p-2 text-base inline-block`}>
-                <span className="font-bold">{trainingLinkLabel ?? 'Trainings'}</span>
-              </a>
-            </Link>
+            <a href="/search" className={`${dark ? 'text-black bg-white' : 'text-white bg-black'} rounded-md p-2 text-base inline-block`}>
+              <span className="font-bold">{trainingLinkLabel ?? 'Trainings'}</span>
+            </a>
           )}
         </div>
       </div>

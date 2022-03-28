@@ -108,15 +108,15 @@ export default function SearchScene({
           filtersOpen ? 'flex' : 'hidden'
         } top-0 left-0 w-screen h-screen bg-black-opaque z-[9] flex-row`}
       >
-        <div className="max-w-screen-sm h-screen bg-white p-6">
+        <div className="max-w-screen-sm grow h-screen bg-white p-6">
           <SearchForm companies={companies} tags={tags} filters={filters} overrides={overrides} />
         </div>
         <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>
       </div>
       <TrainingDetailModal training={currentlySelectedTraining} onClose={closeModal} />
       <EventDetailModal event={currentlySelectedEvent} onClose={closeModal} />
-      <SceneInfo title={title} info={info} thumbnail={thumbnail} className="block md:hidden mt-4 pl-4" />
-      <div className="w-screen flex flex-row justify-center pt-4">
+      <SceneInfo title={title} info={info} thumbnail={thumbnail} className="block md:hidden mt-4 px-4" />
+      <div className="w-screen flex flex-row justify-center">
         <div className="items-start flex max-w-screen-3xl grow flex-row">
           <div className="hidden md:block px-4 pb-4 rounded-xl max-w-xs">
             <SceneInfo title={title} info={info} thumbnail={thumbnail} className="hidden md:block" />
@@ -145,10 +145,10 @@ export default function SearchScene({
                 }
               />
             </div>
-            <PaginationBar />
-            <div className="mt-6 bg-gray-50 rounded-xl p-4 md:p-10">
+            <div className="mt-4 bg-gray-50 rounded-xl p-4 md:p-10">
               <SuggestedAppointmentOnlyTrainings onTrainingClick={handleTrainingClick} />
             </div>
+            <PaginationBar />
           </div>
         </div>
       </div>
@@ -169,15 +169,21 @@ const SceneInfo = ({
 }) => {
   return (
     <div className={className}>
-      {thumbnail && <img src={thumbnail} className="w-36 mb-4" />}
-      <h1 className="font-bold text-4xl mb-2">{title ?? 'Search Training Events'}</h1>
-      <p className="text-sm mb-6 max-w-prose">
-        {info ??
-          `
+      {thumbnail && (
+        <div className="flex flex-row">
+          <img src={thumbnail} className="w-32 h-auto mb-4 rounded" />
+        </div>
+      )}
+      <div className="bg-slate-50 rounded-xl p-4 mb-6">
+        <h1 className="font-bold text-3xl mb-2">{title ?? 'Search Training Events'}</h1>
+        <p className="text-sm max-w-prose">
+          {info ??
+            `
             Search US companies providing tier one tactical, medical, and survival training. New trainings and events
             added every week.
           `}
-      </p>
+        </p>
+      </div>
     </div>
   )
 }

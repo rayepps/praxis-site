@@ -5,16 +5,9 @@ import _ from 'radash'
 import formatDate from 'date-fns/format'
 import * as t from 'src/types'
 import HorizontalGallery from 'src/components/ui/HorizontalGallery'
-import { HiX, HiOutlineLink, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineCurrencyDollar } from 'react-icons/hi'
+import { HiX, HiOutlineLink, HiArrowNarrowRight, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineCurrencyDollar } from 'react-icons/hi'
 
-export default function EventDetailModal({
-  event,
-  onClose
-}: {
-  event: t.Event | null
-  onClose?: () => void
-}) {
-
+export default function EventDetailModal({ event, onClose }: { event: t.Event | null; onClose?: () => void }) {
   if (!event) return null
 
   const closeModal = () => {
@@ -59,9 +52,9 @@ export default function EventDetailModal({
             </div>
           </div>
           <div className="flex flex-row items-center">
-            <button onClick={copyLinkToClipboard} className="mr-2">
+            {/* <button onClick={copyLinkToClipboard} className="mr-2">
               <HiOutlineLink size={22} className="text-black" />
-            </button>
+            </button> */}
             <button onClick={closeModal}>
               <HiX size={24} className="text-black" />
             </button>
@@ -101,8 +94,20 @@ export default function EventDetailModal({
             Sign Up Now
           </a>
         </div>
-        <div className="mt-2">
+        <div className="my-2">
           <div dangerouslySetInnerHTML={{ __html: training.description.html }} />
+        </div>
+        <div className="flex flex-row justify-end">
+          <a
+            href={
+              event.externalLink ?? event.directLink ?? training.company?.externalLink ?? training.company?.directLink
+            }
+            target="_blank"
+            className="p-2 bg-black flex flex-row text-center items-center text-white w-full md:w-auto mt-4 md:mt-0 rounded font-bold whitespace-nowrap"
+          >
+            <span>More Information</span>
+            <HiArrowNarrowRight className="ml-2" />
+          </a>
         </div>
       </div>
     </Modal>

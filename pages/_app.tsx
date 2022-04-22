@@ -2,16 +2,18 @@ import Head from 'next/head'
 import Router, { useRouter } from 'next/router'
 import type { AppProps } from 'next/app'
 import np from 'nprogress'
-
-import 'src/styles/tailwind.css'
-import 'src/styles/index.css'
-import 'src/styles/nprogress.css'
 import Recoil from 'recoil'
 import AdminDevTools from 'src/components/AdminDevTools'
 import { useCallback, useEffect } from 'react'
 import storage from 'src/local-storage'
 import useAnalytics from 'src/hooks/useAnalytics'
-import useTrackedSession from 'src/hooks/useTrackedSession'
+import useLocalSession from 'src/hooks/useLocalSession'
+
+import 'src/styles/tailwind.css'
+import 'src/styles/index.css'
+import 'src/styles/nprogress.css'
+import 'src/components/ui/USStatesMapGrid/style.css'
+
 
 np.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => np.start())
@@ -26,10 +28,11 @@ declare global {
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const [session] = useTrackedSession()
+  const session = useLocalSession()
   const analytics = useAnalytics()
   const trackPage = useCallback((url: string) => {
-    analytics?.track_page(getPageKey(url), session!.metadata!)
+    if (!session) return
+    analytics?.track_page(getPageKey(url))
   }, [analytics, session])
   useEffect(() => {
     router.events.on('routeChangeStart', trackPage)
@@ -70,8 +73,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 const getPageKey = (pathname: string) => {
   if (pathname === '/') return 'px.page.home'
+  if (pathname === '/about') return 'px.page.about'
   if (pathname === '/search') return 'px.page.search'
+  if (pathname === '/training') return 'px.page.search'
   if (pathname === '/new') return 'px.page.recently-published'
+  if (pathname.startsWith('/e/')) return 'px.page.event'
+  if (pathname.startsWith('/local/')) return 'px.page.local'
   return 'px.page.untracked'
 }
 

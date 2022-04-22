@@ -6,13 +6,13 @@ import SearchScene from '../src/components/scenes/Search'
 import MarketingPrompts from 'src/components/MarketingPrompts'
 import Meta from 'src/Meta'
 
-const SearchPage: NextPage = () => {
+const TrainingPage: NextPage = () => {
   return (
     <>
       <Head>
         <Meta
-          title='Search Trainings'
-          description='Search tactical, survival, and medical trainings from companies across the US.'
+          title='Praxis Tactical Training'
+          description='Search the best tactical, survival, and medical training courses in the USA.'
           thumbnailUrl='https://praxisco.us/preview.png'
         />
       </Head >
@@ -24,4 +24,4 @@ const SearchPage: NextPage = () => {
   )
 }
 
-export default SearchPage
+export default TrainingPage

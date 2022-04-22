@@ -53,7 +53,7 @@ const Modal = ({
         onClick={handleCloseClick}
       >
         <div
-          className="overflow-y-scroll h-screen lg:max-h-[80vh] lg:max-w-3xl p-4 md:p-12 bg-white lg:rounded"
+          className="overflow-y-scroll lg:max-h-[80vh] lg:max-w-2xl p-4 md:p-12 bg-white lg:rounded"
           onClick={(e: SyntheticEvent) => e.stopPropagation()}
         >
           <div>

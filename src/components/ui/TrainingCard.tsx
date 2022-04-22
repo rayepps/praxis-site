@@ -23,8 +23,8 @@ export default function TrainingCard({
   })()
 
   return (
-    <div className="drop-shadow-lg flex flex-col" onClick={onClick}>
-      <div className="relative h-56 w-full hover:cursor-pointer">
+    <div className="drop-shadow-lg flex flex-col">
+      <div className="relative h-56 w-full hover:cursor-pointer" onClick={onClick}>
         <img src={thumbnailUrl} className="object-cover h-full w-full rounded-t-lg" />
         {!!training.price && (
           <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
@@ -40,7 +40,7 @@ export default function TrainingCard({
       <div className="p-3 grow bg-white flex flex-col rounded-b-md">
         <div className="grow flex flex-row">
           <div className="grow">
-            <h4 className="text-xl pr-2 font-bold">{training.name}</h4>
+            <h4 className="text-xl pr-2 font-bold hover:underline hover:cursor-pointer" onClick={onClick}>{training.name}</h4>
             <span className="text-sm font-semibold mb-2 text-gray-600 inline-block">{training.company.name}</span>
             <div className="">
               {training.tags.map(tag => (
@@ -50,7 +50,7 @@ export default function TrainingCard({
               ))}
             </div>
           </div>
-          <img src={training.company?.thumbnail?.url} className="object-cover h-10 w-10 rounded" />
+          {/* <img src={training.company?.thumbnail?.url} className="object-cover h-10 w-10 rounded" /> */}
         </div>
         <div className="flex flex-row">
           <div className="grow">

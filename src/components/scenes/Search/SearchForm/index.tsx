@@ -124,7 +124,6 @@ export default function SearchForm({
 
   const handleDateRange = (range: { start: Date; end: Date }) => {
     setShowDateRange(false)
-    console.log(range)
     const fmt = (date: Date) => formatDate(date, 'dd.MM.yyyy')
     const newDate =
       range.start.getTime() === range.end.getTime() ? fmt(range.start) : `${fmt(range.start)}-${fmt(range.end)}`

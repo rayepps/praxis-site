@@ -10,9 +10,11 @@ import MarketingPrompts from 'src/components/MarketingPrompts'
 
 export async function getStaticProps(context: NextPageContext): Promise<GetStaticPropsResult<Props>> {
   const featuredEvents = await graphcms.listFeaturedEvents()
+  const stateTrainingCounts = await graphcms.lookupStateTrainingCount()
   return {
     props: {
-      featuredEvents
+      featuredEvents,
+      stateTrainingCounts
     },
     revalidate: 60 * 60 // 1 hour
   }
@@ -20,21 +22,23 @@ export async function getStaticProps(context: NextPageContext): Promise<GetStati
 
 type Props = {
   featuredEvents: t.Event[]
+  stateTrainingCounts: Record<string, number>
 }
 
-const Home: NextPage<Props> = ({ featuredEvents }) => {
+const Home: NextPage<Props> = ({ featuredEvents, stateTrainingCounts }) => {
   return (
     <>
       <Head>
         <Meta
-          title='Praxis | Tactical & Apparel'
-          description='Tactical, survival, and medical trainings from companies across the US. Organized and searchable.'
+          title='Praxis Tactical Training'
+          description='The best tactical, survival, and medical training courses in the USA. Organized and searchable.'
           thumbnailUrl='https://praxisco.us/preview.png'
         />
       </Head>
-      <Header showTrainingsLink />
-      <HomeScene 
+      <Header links={['about', 'trainings']} />
+      <HomeScene
         featuredEvents={featuredEvents}
+        stateTrainingCounts={stateTrainingCounts}
       />
       <Footer />
       <MarketingPrompts />

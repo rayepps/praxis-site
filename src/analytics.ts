@@ -12,7 +12,7 @@ const track = <T>(key: string, analytics: SegmentAnalytics, mapper: (arg: T) => 
 }
 
 const page = <T>(analytics: SegmentAnalytics) => {
-  return (key: string, metadata: t.ContactMetadata) => {
+  return (key: string, metadata: any = {}) => {
     analytics.page(key, metadata)
   }
 }
@@ -34,9 +34,12 @@ export const makeAnalytics = (analytics: SegmentAnalytics) => ({
     training_id: training.id,
     training_name: training.name
   })),
-  track_alerts_subscription: track('user.subscribed.event-alerts', analytics, (data: t.ContactMetadata & { contact_id: string }) => data),
-  track_dismiss_alerts_subscription: track('user.dismissed.event-alerts-prompt', analytics, (data: t.ContactMetadata & { contact_id: string | null }) => data),
-  track_page: page(analytics)
+  track_alerts_subscription: track('user.subscribed.event-alerts', analytics, (data: { contact_id: string }) => data),
+  track_dismiss_alerts_subscription: track('user.dismissed.event-alerts-prompt', analytics, (data: { contact_id: string | null }) => data),
+  track_page: page(analytics),
+  track_interactive_map_used: track('user.clicked.interactive-map', analytics, (state: string) => ({
+    state
+  }))
 })
 
 export type PraxisAnalytics = ReturnType<typeof makeAnalytics>

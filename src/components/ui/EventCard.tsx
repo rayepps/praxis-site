@@ -1,4 +1,5 @@
 import formatDate from 'date-fns/format'
+import differenceInDays from 'date-fns/differenceInDays'
 import { HiOutlineLocationMarker, HiOutlineCalendar } from 'react-icons/hi'
 import * as t from 'src/types'
 
@@ -12,6 +13,12 @@ export default function EventCard({ event, onClick }: { event: t.Event; onClick?
     if (!date) return ''
     return formatDate(date, 'MMM do')
   }
+
+  const isNew = (() => {
+    if (!event.createdAt) return false
+    const daysAgo = differenceInDays(new Date(), new Date(event.createdAt))
+    return daysAgo < 5
+  })()
 
   const thumbnailUrl = (() => {
     if (event.images?.length > 0) {
@@ -29,9 +36,9 @@ export default function EventCard({ event, onClick }: { event: t.Event; onClick?
   })()
 
   return (
-    <div className="drop-shadow-lg flex flex-col" onClick={onClick}>
+    <div className="drop-shadow-lg flex flex-col">
       <div className="relative h-56 w-full hover:cursor-pointer">
-        <img src={thumbnailUrl} className="object-cover h-full w-full rounded-t-lg" />
+        <img onClick={onClick} src={thumbnailUrl} className="object-cover h-full w-full rounded-t-lg" />
         {!!event.training.price && (
           <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
             <span className="font-bold">{event.training.displayPrice}</span>
@@ -42,7 +49,7 @@ export default function EventCard({ event, onClick }: { event: t.Event; onClick?
             <span className="text-xs font-black text-white uppercase">sold out</span>
           </div>
         )}
-        {!event.soldOut && event.recentlyAdded === true && (
+        {!event.soldOut && (event.recentlyAdded === true || isNew) && (
           <div className="rounded py-1 px-2 right-3 top-3 absolute bg-green-600">
             <span className="text-xs font-black text-white uppercase">new</span>
           </div>
@@ -51,7 +58,7 @@ export default function EventCard({ event, onClick }: { event: t.Event; onClick?
       <div className="p-3 grow bg-white flex flex-col rounded-b-md">
         <div className="grow flex flex-row">
           <div className="grow">
-            <h4 className="text-xl pr-2 font-bold">{event.training.name}</h4>
+            <h4 className="text-xl pr-2 font-bold hover:underline hover:cursor-pointer" onClick={onClick}>{event.training.name}</h4>
             <span className="text-sm font-semibold mb-2 text-gray-600 inline-block">{event.training.company.name}</span>
             <div className="">
               {event.training.tags.map(tag => (
@@ -62,7 +69,7 @@ export default function EventCard({ event, onClick }: { event: t.Event; onClick?
             </div>
           </div>
 
-          <img src={event.training.company?.thumbnail?.url} className="object-cover h-10 w-10 rounded" />
+          {/* <img src={event.training.company?.thumbnail?.url} className="object-cover h-10 w-10 rounded" /> */}
         </div>
         <div className="flex flex-row">
           <div className="grow">

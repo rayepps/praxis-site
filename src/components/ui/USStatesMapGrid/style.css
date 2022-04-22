@@ -1,0 +1,40 @@
+.px-us-states-map-grid > div::before {
+  content: '';
+  padding-top: 100%;
+  display: block;
+}
+
+.px-us-states-map-box-0 {
+  background: linear-gradient(78deg, #ed213a 0%, #c81027 100%);
+}
+.px-us-states-map-box-0:hover {
+  background: linear-gradient(72deg, #ed213a 0%, #ed213a 100%);
+}
+
+.px-us-states-map-box-1 {
+  background: linear-gradient(78deg, #bf252c 0%, #991e23 100%);
+}
+.px-us-states-map-box-1:hover {
+  background: linear-gradient(72deg, #bf252c 0%, #991e23 100%);
+}
+
+.px-us-states-map-box-2 {
+  background: linear-gradient(78deg, #0f0c29 0%, #0c0a21 100%);
+}
+.px-us-states-map-box-2:hover {
+  background: linear-gradient(72deg, #0f0c29 0%, #0c0a21 100%);
+}
+
+.px-us-states-map-box-3 {
+  background: linear-gradient(78deg, #302b63 0%, #26224f 100%);
+}
+.px-us-states-map-box-3:hover {
+  background: linear-gradient(72deg, #302b63 0%, #26224f 100%);
+}
+
+.px-us-states-map-box-4 {
+  background: linear-gradient(78deg, #24243e 0%, #1d1d32 100%);
+}
+.px-us-states-map-box-4:hover {
+  background: linear-gradient(72deg, #24243e 0%, #1d1d32 100%);
+}

@@ -89,7 +89,10 @@ const createApi = () => {
     },
     marketing: {
       addContact: endpoint<
-        { email: string; source: 'site.partner.form' | 'site.contact.form' | 'site.subscribe.popup' },
+        { 
+          email: string; 
+          source: 'site.partner.form' | 'site.contact.form' | 'site.subscribe.popup' | `site.new-events-in-state.${t.StateAbbreviation}`
+        },
         { contact: t.Contact }
       >({
         module: 'marketing',

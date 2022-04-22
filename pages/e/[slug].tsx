@@ -47,7 +47,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
           thumbnailUrl={thumbnailUrl}
         />
       </Head>
-      <Header />
+      <Header links={['about', 'search-all']} />
       <EventDetailScene event={event} />
       <Footer />
     </>

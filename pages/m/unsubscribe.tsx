@@ -6,7 +6,6 @@ import api from '../../src/api'
 import { useFetch } from 'src/hooks'
 import { useEffect } from 'react'
 import { toaster } from 'evergreen-ui'
-import storage from 'src/local-storage'
 
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
   return {

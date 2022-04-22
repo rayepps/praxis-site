@@ -175,11 +175,12 @@ const SceneInfo = ({
         </div>
       )}
       <div className="bg-slate-50 rounded-xl p-4 mb-6">
-        <h1 className="font-bold text-3xl mb-2">{title ?? 'Search Training Events'}</h1>
+        {title && (<h1 className="font-bold text-3xl mb-2">{title}</h1>)}
+        {!title && (<h1 className="font-bold text-3xl mb-2">Tactical<br />Survival<br />&amp; Medical<br/>Training</h1>)}
         <p className="text-sm max-w-prose">
           {info ??
             `
-            Search US companies providing tier one tactical, medical, and survival training. New trainings and events
+            Search the best tactical, medical, and survival training courses in the USA. New trainings and events
             added every week.
           `}
         </p>

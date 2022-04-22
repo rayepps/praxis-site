@@ -17,9 +17,6 @@ export default function LargeSubscribeToAlertsModal({
   onClose?: () => void
 }) {
 
-  console.log('x--> PROPS')
-  console.log({ open, subscribed, loading })
-
   const [email, setEmail] = useState('')
   const [subscribeIdx] = useState(_.random(0, 2))
 

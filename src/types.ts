@@ -1,3 +1,7 @@
+import type { StateAbbreviation } from 'src/data/states'
+
+export type { StateAbbreviation } from 'src/data/states'
+
 export type Dict<T> = { [key: string]: T }
 
 export type TrainingType = 'tactical' | 'medical' | 'survival'
@@ -7,6 +11,10 @@ export type TrainingSearchOrder = 'price:asc' | 'price:desc'
 export type EventSearchFilterFields = 'company' | 'date' | 'tags' | 'type' | 'state'
 
 export type PriceUnit = 'per_training' | 'per_hour'
+
+export type UnitOfTime = 'second' | 'seconds' | 'minute' | 'minutes' | 'hour' | 'hours' | 'day' | 'days'
+export type Duration = `${number} ${UnitOfTime}`
+export type Expiration = Duration | 'never'
 
 export interface EventSearchOptions {
   pageSize?: number
@@ -55,6 +63,7 @@ export interface Asset {
 export interface RichText {
   raw: any
   html: string
+  markdown?: string
 }
 
 export interface Tag {
@@ -128,6 +137,7 @@ export interface Event {
   name: string
   soldOut: boolean
   recentlyAdded: boolean
+  createdAt: string
 }
 
 export interface FeatureTag {
@@ -135,7 +145,7 @@ export interface FeatureTag {
   thumbnail: Asset
 }
 
-export type SubscriptionKey = 'new-event-alerts'
+export type SubscriptionKey = 'subscription.new-events' | 'subscription.new-events-by-state'
 
 export interface Subscription {
   timestamp: number
@@ -155,28 +165,23 @@ export interface Contact {
   }[]
 }
 
-export interface ContactMetadata {
-  ipAddress: string
-  city: string
-  state: string // Idaho
-  stateCode: string // ID
-  country: string // United States
-  countryCode: string // US
-  longitude: number
-  latitude: number
-  tz: string // America/Boise
-  tzAbbreviation: string // MDT
-  utcOffset: number // -6
-  dst: boolean // day light savings time
+export type UserActivityKey = 'user.subscribed.new-event-alerts'
+  | 'user.declined.new-event-alerts'
+  | `user.subscribed.new-events-by-state-alerts.${StateAbbreviation}`
+  | `user.declined.new-events-by-state.${StateAbbreviation}`
+
+export interface SessionActivityEvent {
+  key: UserActivityKey
+  timestamp: number
+  expiration: Expiration
+  expiresAt: number | null
+  action: any
 }
 
-export interface TrackedSession {
+export interface LocalSession {
   contactId: string | null
   timestamp: number
-  expiration: number
-  subscriptions: Subscription[]
-  metadata: ContactMetadata | null
-  prompted: Subscription[]
+  activity: SessionActivityEvent[]
 }
 
 export interface Giveaway {

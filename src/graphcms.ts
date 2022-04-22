@@ -1,3 +1,4 @@
+import _ from 'radash'
 import { gql, GraphQLClient } from 'graphql-request'
 import * as t from './types'
 import config from './config'
@@ -98,6 +99,35 @@ export async function listFeaturedEvents(): Promise<t.Event[]> {
     `
   const response = await client.request<{ featuredEvents: { event: t.Event }[] }>(query)
   return response.featuredEvents.map(x => x.event)
+}
+
+export async function lookupStateTrainingCount(): Promise<Record<string, number>> {
+  const query = gql`
+    query QueryLocationMappings {
+      locationMappings {
+        id
+        state
+        events {
+          id
+        }
+      }
+    }
+  `
+  const response = await client.request<{ locationMappings: { state: string, events: any[] }[] }>(query)
+  const counts = response.locationMappings.map(x => ({ state: x.state, count: x.events.length }))
+  return counts.reduce((acc, item) => {
+    if (acc[item.state]) {
+      return {
+        ...acc,
+        [item.state]: acc[item.state] + item.count
+      }
+    } else {
+      return {
+        ...acc,
+        [item.state]: item.count
+      }
+    }
+  }, {} as Record<string, number>)
 }
 
 export async function listFeaturedTrainings(): Promise<t.Training[]> {
@@ -253,5 +283,6 @@ export default {
   listFeaturedTags,
   findFeaturedTag,
   findTrainingsWithTag,
-  listFeaturedEvents
+  listFeaturedEvents,
+  lookupStateTrainingCount
 }

@@ -16,7 +16,7 @@ const IdahoLocationPage: NextPage = () => {
           thumbnailUrl="https://praxisco.us/preview.png"
         />
       </Head>
-      <Header showTrainingsLink trainingLinkLabel="All Trainings" />
+      <Header links='search-all' />
       <SearchScene
         thumbnail="/locations/idaho-flag.png"
         title="Training in Idaho"

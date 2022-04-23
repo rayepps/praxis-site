@@ -15,6 +15,7 @@ import {
 } from 'react-icons/hi'
 import Markdown from './Markdown'
 import { useState } from 'react'
+import CopyToClipboard from './CopyToClipboard'
 
 export default function EventDetailModal({ event, onClose }: { event: t.Event | null; onClose?: () => void }) {
   if (!event) return null
@@ -53,16 +54,17 @@ export default function EventDetailModal({ event, onClose }: { event: t.Event | 
     setTimeout(() => setCopyText('copy link'), 2000)
   }
 
+  const base = (() => {
+    if (window.location.href.includes('localhost')) return 'http://localhost:3009'
+    return 'https://praxisco.us'
+  })()
+  const link = `${base}/e/${event.slug}`
+
   return (
     <Modal open onClose={closeModal}>
       <div>
         <div className="flex flex-row items-center justify-end">
-          <button onClick={copyLinkToClipboard} className="flex items-center mr-2 p-2 group bg-slate-200 rounded active:bg-black">
-            <span className="inline-block whitespace-nowrap overflow-hidden max-w-0 group-hover:max-w-2xl transition-[max-width] duration-200 group-active:text-white">
-              {copyText}
-            </span>
-            <HiOutlineLink size={21} className="text-black inline group-active:text-white" />
-          </button>
+          <CopyToClipboard content={link} name='link' />
           <button onClick={closeModal} className="group hover:bg-black p-2 rounded">
             <HiX size={23} className="group-hover:text-white" />
           </button>
@@ -124,7 +126,7 @@ export default function EventDetailModal({ event, onClose }: { event: t.Event | 
           <div className="grow pr-6">
             <h6 className="text-2xl text-center md:text-left font-bold pb-2 md:pb-0">More Information</h6>
             <p className="text-lg text-center md:text-left font-medium max-w-prose">
-              Read the rest on the {event.training.company.name} website. Course instructors, directions, required
+              Read the rest at {event.training.company.name}. Course instructors, directions, required
               equipment, and other details await.
             </p>
           </div>

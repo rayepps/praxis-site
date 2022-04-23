@@ -5,9 +5,7 @@ import config from './config'
 import type { AxiosRequestConfig } from 'axios'
 import storage from 'src/local-storage'
 
-const appendSkipCacheHeader = (config: AxiosRequestConfig) => {
-  if (typeof window === 'undefined') return config
-  if (!storage.skipCache.get()) return config
+const skipCache = (config: AxiosRequestConfig): AxiosRequestConfig => {
   return {
     ...config,
     headers: {
@@ -15,6 +13,12 @@ const appendSkipCacheHeader = (config: AxiosRequestConfig) => {
       'x-skip-cache': 'yes'
     }
   }
+}
+
+const appendSkipCacheHeader = (config: AxiosRequestConfig) => {
+  if (typeof window === 'undefined') return config
+  if (!storage.skipCache.get()) return config
+  return skipCache(config)
 }
 
 const createApi = () => {
@@ -89,9 +93,13 @@ const createApi = () => {
     },
     marketing: {
       addContact: endpoint<
-        { 
-          email: string; 
-          source: 'site.partner.form' | 'site.contact.form' | 'site.subscribe.popup' | `site.new-events-in-state.${t.StateAbbreviation}`
+        {
+          email: string
+          source:
+            | 'site.partner.form'
+            | 'site.contact.form'
+            | 'site.subscribe.popup'
+            | `site.new-events-in-state.${t.StateAbbreviation}`
         },
         { contact: t.Contact }
       >({
@@ -130,6 +138,17 @@ const createApi = () => {
       >({
         module: 'trainings',
         function: 'search'
+      }),
+      findBySlug: endpoint<
+        {
+          slug: string
+        },
+        {
+          training: t.Training
+        }
+      >({
+        module: 'trainings',
+        function: 'find-by-slug'
       })
     }
   }

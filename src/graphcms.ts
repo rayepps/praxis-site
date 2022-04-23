@@ -61,6 +61,7 @@ export async function listFeaturedEvents(): Promise<t.Event[]> {
             directLink
             externalLink
             name
+            slug
             images {
               url
             }

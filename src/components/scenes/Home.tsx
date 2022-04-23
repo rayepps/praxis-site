@@ -128,7 +128,7 @@ const EventTrainingPreviewBlocks = ({ events }: { events: t.Event[] }) => {
   return (
     <div className="md:p-10 p-2">
       {events.map((event, idx) => (
-        <Link href="/training" passHref key={event.id}>
+        <Link href={`/e/${event.slug}`} passHref key={event.id}>
           <a>
             <div
               className="bg-white group flex flex-row rounded-lg shadow-md md:relative mb-6 hover:cursor-pointer"

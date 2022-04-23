@@ -6,6 +6,7 @@ import formatDate from 'date-fns/format'
 import * as t from 'src/types'
 import HorizontalGallery from 'src/components/ui/HorizontalGallery'
 import { HiX, HiOutlineLink, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineCurrencyDollar } from 'react-icons/hi'
+import CopyToClipboard from './CopyToClipboard'
 
 export default function TrainingDetailModal({
   training,
@@ -28,9 +29,11 @@ export default function TrainingDetailModal({
     training.company.thumbnail
   ].filter(x => !!x)
 
-  const copyLinkToClipboard = () => {
-    navigator.clipboard.writeText(`https://praxisco.us/t/${training.slug}`)
-  }
+  const base = (() => {
+    if (window.location.href.includes('localhost')) return 'http://localhost:3009'
+    return 'https://praxisco.us'
+  })()
+  const link = `${base}/t/${training.slug}`
 
   return (
     <Modal open onClose={closeModal}>
@@ -48,9 +51,7 @@ export default function TrainingDetailModal({
             </div>
           </div>
           <div className="flex flex-row items-center">
-            <button onClick={copyLinkToClipboard} className="mr-2">
-              <HiOutlineLink size={22} className="text-black" />
-            </button>
+            <CopyToClipboard content={link} name='link' />
             <button onClick={closeModal}>
               <HiX size={24} className="text-black" />
             </button>

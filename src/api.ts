@@ -150,6 +150,17 @@ const createApi = () => {
         module: 'trainings',
         function: 'find-by-slug'
       })
+    },
+    locations: {
+      listStateEventCounts: endpoint<
+        {},
+        {
+          counts: Record<t.StateAbbreviation, number>
+        }
+      >({
+        module: 'locations',
+        function: 'list-state-event-counts'
+      })
     }
   }
 }

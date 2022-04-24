@@ -72,6 +72,7 @@ export const eventSearchUrlQuerySelector = selector<string>({
       : {}
     return ComplexQueryString.serialize({
       ...options,
+      near: undefined,
       // If the page is at default, no need to add it to the query
       // string the API will default to 1/25
       page: options.page === 1 ? undefined : options.page,
@@ -93,9 +94,11 @@ export const eventSearchUrlQuerySelector = selector<string>({
 export const eventSearchHashSelector = selector<string>({
   key: 'eventSearchHashSelector',
   get: ({ get }) => {
+    const options = get(eventSearchOptionsState)
     return uuid.v5(JSON.stringify({
       qs: get(eventSearchUrlQuerySelector),
-      overrides: get(eventSearchOptionsState).overrides
+      overrides: options.overrides,
+      near: !!options.near
     }), uuid.v5.DNS)
   }
 })
@@ -123,7 +126,7 @@ export const eventSearchBasedTrainingOptionsSelector = selector<t.TrainingSearch
   get: ({ get }) => {
     const eventOptions = get(eventSearchOptionsState)
     return {
-      pageSize: 6, // always limit to 6 when event search based
+      pageSize: 25, // always limit to 6 when event search based
       page: 1, // always limit to first page when event search based
       order: eventOptions.order as t.TrainingSearchOrder,
       type: eventOptions.type,

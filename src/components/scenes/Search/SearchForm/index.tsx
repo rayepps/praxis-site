@@ -1,8 +1,8 @@
 import _ from 'radash'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import * as t from 'src/types'
 import { US_STATES } from 'src/const'
-import { HiX } from 'react-icons/hi'
+import { HiOutlineBan, HiOutlineLocationMarker, HiX } from 'react-icons/hi'
 import parseDate from 'date-fns/parse'
 import formatDate from 'date-fns/format'
 import endOfMonth from 'date-fns/endOfMonth'
@@ -13,17 +13,27 @@ import DateRange from 'src/components/ui/DateRange'
 
 const allFilterFields: t.EventSearchFilterFields[] = ['company', 'date', 'tags', 'type', 'state']
 
-export default function SearchForm({
+export const SearchForm = ({
   tags,
   companies,
+  geolocation,
+  states,
   filters: filterFieldList = allFilterFields,
   overrides
 }: {
   tags: t.Tag[]
   companies: t.Company[]
+  states: Record<t.StateAbbreviation, number>
+  geolocation?: {
+    coords: t.GeoLocation | null
+    error: GeolocationPositionError | null
+    city: string | null
+    state: string | null
+    ready: boolean
+  }
   filters?: t.EventSearchFilterFields[]
   overrides?: Partial<t.EventSearchOptions>
-}) {
+}) => {
   const [options, setOptions] = Recoil.useRecoilState(eventSearchOptionsState)
   const [showDateRange, setShowDateRange] = useState(false)
 
@@ -36,6 +46,33 @@ export default function SearchForm({
       overrides: Object.keys(overrides) as any
     })
   }, [overrides])
+
+  useEffect(() => {
+    if (!geolocation?.ready) return
+    if (options.state) return
+    setOptions({
+      ...options,
+      near: geolocation.coords ?? undefined
+    })
+  }, [geolocation?.ready, geolocation?.coords])
+
+  const clearCurrentLocation = () => {
+    setOptions({
+      ...options,
+      near: undefined,
+      page: 1
+    })
+  }
+
+  const applyCurrentLocation = () => {
+    if (!geolocation) return
+    setOptions({
+      ...options,
+      near: geolocation.coords ?? undefined,
+      state: undefined,
+      page: 1
+    })
+  }
 
   const setType = (type: t.TrainingType) =>
     setOptions({
@@ -77,6 +114,7 @@ export default function SearchForm({
     setOptions({
       ...options,
       state,
+      near: undefined,
       page: 1
     })
   }
@@ -178,21 +216,32 @@ export default function SearchForm({
       {filters.type && (
         <div className="mb-6">
           <FilterLabel className="mb-1">Type</FilterLabel>
-          <Checkbox
-            label="Tactical"
-            checked={options.type === 'tactical'}
-            onChange={e => (e.target.checked ? setType('tactical') : clearType())}
-          />
-          <Checkbox
-            label="Survival"
-            checked={options.type === 'survival'}
-            onChange={e => (e.target.checked ? setType('survival') : clearType())}
-          />
-          <Checkbox
-            label="Medical"
-            checked={options.type === 'medical'}
-            onChange={e => (e.target.checked ? setType('medical') : clearType())}
-          />
+          <div className="flex flex-row justify-between">
+            <button
+              onClick={() => (options.type !== 'tactical' ? setType('tactical') : clearType())}
+              className={`border-black grow border px-2 py-1 rounded hover:bg-black hover:text-white text-black ${
+                options.type === 'tactical' && 'text-white bg-black'
+              }`}
+            >
+              Tactical
+            </button>
+            <button
+              onClick={() => (options.type !== 'survival' ? setType('survival') : clearType())}
+              className={`border-black grow mx-2 border px-2 py-1 rounded hover:bg-black hover:text-white text-black ${
+                options.type === 'survival' && 'text-white bg-black'
+              }`}
+            >
+              Survival
+            </button>
+            <button
+              onClick={() => (options.type !== 'medical' ? setType('medical') : clearType())}
+              className={`border-black grow border px-2 py-1 rounded hover:bg-black hover:text-white text-black ${
+                options.type === 'medical' && 'text-white bg-black'
+              }`}
+            >
+              Medical
+            </button>
+          </div>
         </div>
       )}
       {filters.company && (
@@ -216,11 +265,38 @@ export default function SearchForm({
       )}
       {filters.state && (
         <div className="mb-6">
-          <FilterLabel className="mb-1">State</FilterLabel>
+          <FilterLabel className="mb-1">Location</FilterLabel>
+          <div className="flex flex-row mb-2">
+            {geolocation && geolocation.ready && options.near && (
+              <button
+                onClick={clearCurrentLocation}
+                className="hover:cursor-pointer group grow bg-blue-500 border border-blue-500 rounded flex items-center justify-center"
+              >
+                <HiOutlineLocationMarker size={22} className="text-white" />
+                <span className="text-white block ml-2">
+                  {geolocation.city}, {geolocation.state}
+                </span>
+              </button>
+            )}
+            {geolocation && geolocation.ready && !options.near && (
+              <button
+                onClick={applyCurrentLocation}
+                className="hover:cursor-pointer group grow hover:border-blue-500 border border-black rounded flex items-center justify-center"
+              >
+                <HiOutlineLocationMarker size={22} className="text-black group-hover:text-blue-500" />
+                <span className="text-black block ml-2 group-hover:text-blue-500">
+                  {geolocation.city}, {geolocation.state}
+                </span>
+              </button>
+            )}
+            {geolocation && geolocation.ready && (
+              <ClearFilterButton disabled={!options.near} onClick={clearCurrentLocation} />
+            )}
+          </div>
           <div className="flex flex-row">
             <SelectMenu
               title="State"
-              options={Object.entries(US_STATES).map(([abbv, name]) => ({ label: name, value: abbv }))}
+              options={Object.entries(states).map(([abbv, count]) => ({ label: `${US_STATES[abbv]} (${count})`, value: abbv }))}
               selected={options.state}
               filterPlaceholder="Choose state"
               onSelect={item => updateState(item.value as string)}
@@ -306,32 +382,6 @@ const ClearFilterButton = ({ disabled, onClick }: { disabled: boolean; onClick?:
   )
 }
 
-//
-// Attempting to make sexy looking radios without using evergreen-ui
-//
-// const Radios = ({
-//   options,
-//   selected,
-//   multi = false,
-//   onChange
-// }: {
-//   options: { label: string; value: string }[]
-//   selected: string | string[]
-//   multi?: boolean
-//   onChange?: (selected: string | string[]) => void
-// }) => {
-//   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-//     event.target.value
-//   }
-//   const canDeselect = multi ?
-//   return (
-//     <div>
-//       {options.map((opt) => {
-//         <div key={opt.value}>
-//           <input type="checkbox" value={opt.value} onChange={handleChange} />
-//           <span>{opt.label}</span>
-//         </div>
-//       })}
-//     </div>
-//   )
-// }
+export default memo(SearchForm, (propsA, propsB) => {
+  return JSON.stringify(propsA) === JSON.stringify(propsB)
+})

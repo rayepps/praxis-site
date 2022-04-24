@@ -1,8 +1,9 @@
 import * as t from 'src/types'
+import duration from 'src/duration-fns'
 
-type StorageValueMapper<T> = {
-  stringify: (value: T) => string
-  parse: (str: string | null) => T
+type StoredItem <T> = {
+  value: T
+  expiration: number | null
 }
 
 export interface LocalStorageItem <T = any> {
@@ -11,44 +12,50 @@ export interface LocalStorageItem <T = any> {
   clear: () => void
 }
 
-export const mappers: Record<string, (defaultValue?: any) => StorageValueMapper<any>> = {
-  string: (defaultValue: string = '') => ({
-    stringify: (s: string) => s,
-    parse: (s: string | null) => s ?? defaultValue
-  }),
-  json: (defaultValue: any = {}) => ({
-    stringify: (obj: any) => JSON.stringify(obj),
-    parse: (s: string | null) => (s ? JSON.parse(s) : defaultValue)
-  }),
-  boolean: (defaultValue: boolean = false) => ({
-    stringify: (bool: boolean) => (bool ? 'yes' : 'no'),
-    parse: (s: string | null) => s === null || s === undefined ? defaultValue : (s === 'yes' ? true : false)
-  })
+const isExpired = (expiration: number | null) => {
+  if (!expiration) return false
+  return expiration < Date.now()
 }
 
-export const localStorageItem = <T>(key: string, mappers: StorageValueMapper<T>): LocalStorageItem<T> => {
+export const localStorageItem = <T>(key: string, defaultValue: T, exp: t.Duration | 'never' = 'never'): LocalStorageItem<T> => {
   const k = `px.${key}`
-  return {
-    get: () => {
-      return mappers.parse(localStorage.getItem(k))
-    },
-    set: (value: T) => {
-      localStorage.setItem(k, mappers.stringify(value))
-    },
-    clear: () => {
-      localStorage.removeItem(k)
+  const clear = () => {
+    localStorage.removeItem(k)
+  }
+  const get = () => {
+    const raw = localStorage.getItem(k)
+    if (!raw) return defaultValue
+    const { expiration, value } = JSON.parse(raw) as StoredItem<T>
+    if (isExpired(expiration)) {
+      clear()
+      return defaultValue
     }
+    return value
+  }
+  const set = (value: T) => {
+    const item: StoredItem<T> = {
+      expiration: exp === 'never' ? null : (Date.now() + duration.parse(exp, 'milliseconds')),
+      value
+    }
+    localStorage.setItem(k, JSON.stringify(item))
+  }
+  return {
+    get, set, clear
   }
 }
 
-export const isAdmin = localStorageItem<boolean>('is-admin', mappers.boolean())
-export const skipCache = localStorageItem<boolean>('skip-cache', mappers.boolean())
-export const skipAnalytics = localStorageItem<boolean>('skip-analytics', mappers.boolean())
-export const session = localStorageItem<t.LocalSession>('session.local', mappers.json(null))
+export const isAdmin = localStorageItem<boolean>('is-admin.v2', false,)
+export const skipCache = localStorageItem<boolean>('skip-cache.v2', false,)
+export const skipAnalytics = localStorageItem<boolean>('skip-analytics.v2', false,)
+export const session = localStorageItem<t.LocalSession | null>('session.local.v2', null)
+export const abstract = localStorageItem<t.AbstractData | null>('abstract.v2', null, '15 minutes')
+export const geolocation = localStorageItem<t.GeoLocation | null>('geolocation.v2', null, '15 minutes')
 
 export default {
   isAdmin,
   skipCache,
   skipAnalytics,
-  session
+  session,
+  abstract,
+  geolocation
 }

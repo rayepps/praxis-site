@@ -22,39 +22,43 @@ const useLocalSession = (): t.LocalSession & SessionFunctions & { isPersisted: b
     return event.expiresAt! < Date.now()
   }
 
-  return {
-    ...session,
-    isPersisted,
-    record: (key: t.UserActivityKey, action: any = {}, exp: t.Expiration = 'never') => {
-      const event: t.SessionActivityEvent = {
-        key,
-        timestamp: Date.now(),
-        expiration: exp ?? 'never',
-        expiresAt: exp === 'never' ? null : addSeconds(new Date(), DurationFns.parse(exp)).getTime(),
-        action
-      }
-      if (!isPersisted) return event
-      setSession({
-        ...session,
-        activity: _.replaceOrAppend(session?.activity ?? [], event, ev => ev.key === key)
-      })
-      return event
-    },
-    find: (key: t.UserActivityKey): t.SessionActivityEvent | null => {
-      if (!isPersisted) return null
-      const event = session?.activity.find(ev => ev.key === key)
-      if (!event) {
-        return null
-      }
-      if (isExpired(event)) {
-        setSession({
-          ...session,
-          activity: _.remove(session?.activity ?? [], ev => ev.key === key)
-        })
-        return null
-      }
-      return event
+  const record: SessionFunctions['record'] = (key: t.UserActivityKey, action: any = {}, exp: t.Expiration = 'never') => {
+    const event: t.SessionActivityEvent = {
+      key,
+      timestamp: Date.now(),
+      expiration: exp ?? 'never',
+      expiresAt: exp === 'never' ? null : addSeconds(new Date(), DurationFns.parse(exp)).getTime(),
+      action
     }
+    if (!isPersisted) return event
+    setSession({
+      ...session!,
+      activity: _.replaceOrAppend(session?.activity ?? [], event, ev => ev.key === key)
+    })
+    return event
+  }
+
+  const find: SessionFunctions['find'] = (key: t.UserActivityKey): t.SessionActivityEvent | null => {
+    if (!isPersisted) return null
+    const event = session?.activity.find(ev => ev.key === key)
+    if (!event) {
+      return null
+    }
+    if (isExpired(event)) {
+      setSession({
+        ...session!,
+        activity: _.remove(session?.activity ?? [], ev => ev.key === key)
+      })
+      return null
+    }
+    return event
+  }
+
+  return {
+    ...session!,
+    isPersisted,
+    record,
+    find
   }
 }
 

@@ -28,6 +28,7 @@ import np from 'nprogress'
 
 import 'react-date-range/dist/styles.css' // main style file
 import 'react-date-range/dist/theme/default.css' // theme css file
+import useGeolocation from 'src/hooks/useGeolocation'
 
 export default function SearchScene({
   title,
@@ -54,11 +55,13 @@ export default function SearchScene({
   })
   const listCompanies = useQuery('companies', api.companies.list)
   const listTags = useQuery('tags', api.tags.list)
+  const listStates = useQuery('states', api.locations.listStateEventCounts)
   const searchResults = Recoil.useRecoilValue(eventSearchStateSelector)
   const setCurrentEventId = useSetRecoilState(currentEventIdState)
   const setCurrentTrainingId = useSetRecoilState(currentTrainingIdState)
   const currentlySelectedEvent = useRecoilValue(currentEventSelector)
   const currentlySelectedTraining = useRecoilValue(currentTrainingSelector)
+  const geolocation = useGeolocation()
 
   const handleEventClick = useRecoilCallback(({ set, snapshot }) => (e: t.Event) => {
     set(currentEventIdState, e.id)
@@ -92,6 +95,7 @@ export default function SearchScene({
   useEffect(() => {
     listCompanies.query()
     listTags.query()
+    listStates.query()
   }, [])
 
   useEffect(() => {
@@ -100,6 +104,7 @@ export default function SearchScene({
 
   const companies = listCompanies.data?.companies ?? []
   const tags = listTags.data?.tags ?? []
+  const states = listStates.data?.counts ?? {} as Record<t.StateAbbreviation, number>
 
   return (
     <>
@@ -109,7 +114,7 @@ export default function SearchScene({
         } top-0 left-0 w-screen h-screen bg-black-opaque z-[9] flex-row`}
       >
         <div className="max-w-screen-sm grow h-screen bg-white p-6">
-          <SearchForm companies={companies} tags={tags} filters={filters} overrides={overrides} />
+          <SearchForm states={states} companies={companies} tags={tags} filters={filters} overrides={overrides} geolocation={geolocation} />
         </div>
         <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>
       </div>
@@ -120,7 +125,7 @@ export default function SearchScene({
         <div className="items-start flex max-w-screen-3xl grow flex-row">
           <div className="hidden md:block px-4 pb-4 rounded-xl max-w-xs">
             <SceneInfo title={title} info={info} thumbnail={thumbnail} className="hidden md:block" />
-            <SearchForm companies={companies} tags={tags} filters={filters} overrides={overrides} />
+            <SearchForm states={states} companies={companies} tags={tags} filters={filters} overrides={overrides} geolocation={geolocation} />
           </div>
           <div className="grow px-4 flex flex-col w-full">
             <SummaryBar onToggleFilters={toggleFilters} />

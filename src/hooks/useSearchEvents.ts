@@ -1,6 +1,8 @@
 import { useRecoilCallback, useRecoilValue } from 'recoil'
 import api from 'src/api'
 import { useQuery } from 'src/hooks'
+import formatDate from 'date-fns/format'
+import addYears from 'date-fns/addYears'
 import * as t from 'src/types'
 import { eventSearchHashSelector, eventSearchOptionsState, eventSearchState, eventsState } from '../state/events'
 
@@ -43,7 +45,14 @@ export const useSearchEvents = ({
 
   const fetchAndStore = async () => {
     onStart?.()
-    const { error, data } = await searchEvents.query(options)
+    // If no date is on the options specify now-now+1year
+    // so we don't get any events in the past
+    const opts = { ...options }
+    if (!opts.date) {
+      const fmt = (date: Date) => formatDate(date, 'dd.MM.yyyy')
+      opts.date = `${fmt(new Date())}-${fmt(addYears(new Date(), 1))}`
+    }
+    const { error, data } = await searchEvents.query(opts)
     onDone?.()
     if (error) {
       return { error, data }

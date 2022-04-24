@@ -1,5 +1,7 @@
 import type { StateAbbreviation } from 'src/data/states'
 
+export * from 'src/services/abstract/types'
+
 export type { StateAbbreviation } from 'src/data/states'
 
 export type Dict<T> = { [key: string]: T }
@@ -12,9 +14,14 @@ export type EventSearchFilterFields = 'company' | 'date' | 'tags' | 'type' | 'st
 
 export type PriceUnit = 'per_training' | 'per_hour'
 
-export type UnitOfTime = 'second' | 'seconds' | 'minute' | 'minutes' | 'hour' | 'hours' | 'day' | 'days'
+export type UnitOfTime = 'millisecond' | 'milliseconds' | 'second' | 'seconds' | 'minute' | 'minutes' | 'hour' | 'hours' | 'day' | 'days'
 export type Duration = `${number} ${UnitOfTime}`
 export type Expiration = Duration | 'never'
+
+export type GeoLocation = {
+  longitude: number
+  latitude: number
+}
 
 export interface EventSearchOptions {
   pageSize?: number
@@ -27,6 +34,7 @@ export interface EventSearchOptions {
   company?: string
   date?: string
   appointmentOnly?: boolean
+  near?: GeoLocation
 
   // We track which fields are being overriden. In this use case
   // overriden referrs to a component using the EventSearchForm or

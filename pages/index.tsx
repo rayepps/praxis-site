@@ -7,14 +7,15 @@ import * as t from '../src/types'
 import graphcms from '../src/graphcms'
 import Meta from 'src/Meta'
 import MarketingPrompts from 'src/components/MarketingPrompts'
+import api from 'src/api'
 
 export async function getStaticProps(context: NextPageContext): Promise<GetStaticPropsResult<Props>> {
   const featuredEvents = await graphcms.listFeaturedEvents()
-  const stateTrainingCounts = await graphcms.lookupStateTrainingCount()
+  const { data } = await api.locations.listStateEventCounts({})
   return {
     props: {
       featuredEvents,
-      stateTrainingCounts
+      stateTrainingCounts: data.counts
     },
     revalidate: 60 * 60 // 1 hour
   }

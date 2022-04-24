@@ -102,35 +102,6 @@ export async function listFeaturedEvents(): Promise<t.Event[]> {
   return response.featuredEvents.map(x => x.event)
 }
 
-export async function lookupStateTrainingCount(): Promise<Record<string, number>> {
-  const query = gql`
-    query QueryLocationMappings {
-      locationMappings {
-        id
-        state
-        events {
-          id
-        }
-      }
-    }
-  `
-  const response = await client.request<{ locationMappings: { state: string, events: any[] }[] }>(query)
-  const counts = response.locationMappings.map(x => ({ state: x.state, count: x.events.length }))
-  return counts.reduce((acc, item) => {
-    if (acc[item.state]) {
-      return {
-        ...acc,
-        [item.state]: acc[item.state] + item.count
-      }
-    } else {
-      return {
-        ...acc,
-        [item.state]: item.count
-      }
-    }
-  }, {} as Record<string, number>)
-}
-
 export async function listFeaturedTrainings(): Promise<t.Training[]> {
   const query = gql`
       query ListFeaturedTrainings {
@@ -284,6 +255,5 @@ export default {
   listFeaturedTags,
   findFeaturedTag,
   findTrainingsWithTag,
-  listFeaturedEvents,
-  lookupStateTrainingCount
+  listFeaturedEvents
 }

@@ -40,17 +40,17 @@ export default function EventCard({ event, onClick }: { event: t.Event; onClick?
       <div className="relative h-56 w-full hover:cursor-pointer">
         <img onClick={onClick} src={thumbnailUrl} className="object-cover h-full w-full rounded-t-lg" />
         {!!event.training.price && (
-          <div className="rounded py-1 px-2 left-3 top-3 absolute bg-white-opaque">
+          <div className="rounded px-1 left-3 top-3 absolute bg-white-opaque">
             <span className="font-bold">{event.training.displayPrice}</span>
           </div>
         )}
         {event.soldOut === true && (
-          <div className="rounded py-1 px-2 right-3 top-3 absolute bg-red-600">
+          <div className="rounded px-1 right-3 top-3 absolute bg-red-600">
             <span className="text-xs font-black text-white uppercase">sold out</span>
           </div>
         )}
         {!event.soldOut && (event.recentlyAdded === true || isNew) && (
-          <div className="rounded py-1 px-2 right-3 top-3 absolute bg-green-600">
+          <div className="rounded px-1 right-3 top-3 absolute bg-green-600-opaque">
             <span className="text-xs font-black text-white uppercase">new</span>
           </div>
         )}

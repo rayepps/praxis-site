@@ -10,8 +10,8 @@ import {
 } from 'react-icons/hi'
 import { useFetch } from 'src/hooks'
 import api from 'src/api'
-import * as t from '../../types'
-import EventGrid from '../ui/EventGrid'
+import * as t from '../types'
+import EventGrid from '../components/ui/EventGrid'
 
 export default function GiveawayScene({ giveaway }: { giveaway: t.Giveaway | null }) {
   if (!giveaway) {

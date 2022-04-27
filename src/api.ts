@@ -24,6 +24,15 @@ const appendSkipCacheHeader = (config: AxiosRequestConfig) => {
 const createApi = () => {
   const endpoint = api(config.apiUrl as string, appendSkipCacheHeader)
   return {
+    auth: {
+      login: endpoint<
+        { email: string, password: string },
+        { user: t.User, idToken: string }
+      >({
+        module: 'auth',
+        function: 'login'
+      })
+    },
     events: {
       search: endpoint<
         t.EventSearchOptions,
@@ -149,6 +158,17 @@ const createApi = () => {
       >({
         module: 'trainings',
         function: 'find-by-slug'
+      }),
+      findById: endpoint<
+        {
+          id: string
+        },
+        {
+          training: t.Training
+        }
+      >({
+        module: 'trainings',
+        function: 'find-by-id'
       })
     },
     locations: {

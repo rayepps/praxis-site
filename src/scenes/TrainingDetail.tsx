@@ -9,8 +9,8 @@ import {
   HiOutlineCurrencyDollar,
   HiArrowNarrowRight
 } from 'react-icons/hi'
-import Markdown from '../ui/Markdown'
-import CopyToClipboard from '../ui/CopyToClipboard'
+import Markdown from '../components/ui/Markdown'
+import CopyToClipboard from '../components/ui/CopyToClipboard'
 
 export default function TrainingDetailScene({ training }: { training: t.Training }) {
   const format = (date: Date | null) => {

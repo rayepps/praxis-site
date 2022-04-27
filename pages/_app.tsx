@@ -1,3 +1,4 @@
+import { Wrapper } from '@googlemaps/react-wrapper'
 import Head from 'next/head'
 import Router, { useRouter } from 'next/router'
 import type { AppProps } from 'next/app'
@@ -14,12 +15,12 @@ import 'src/styles/index.css'
 import 'src/styles/nprogress.css'
 import 'src/components/ui/USStatesMapGrid/style.css'
 
-
 np.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => np.start())
 Router.events.on('routeChangeComplete', () => np.done())
 Router.events.on('routeChangeError', () => np.done())
 
+const VITE_GOOGLE_MAPS_API_KEY = 'AIzaSyBZSrk3zBYiZdBrAwRgRiwYO7YlLeEbIBk'
 declare global {
   interface Window {
     iamadmin: () => void
@@ -30,10 +31,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const session = useLocalSession()
   const analytics = useAnalytics()
-  const trackPage = useCallback((url: string) => {
-    if (!session) return
-    analytics?.track_page(getPageKey(url))
-  }, [analytics, session])
+  const trackPage = useCallback(
+    (url: string) => {
+      if (!session) return
+      analytics?.track_page(getPageKey(url))
+    },
+    [analytics, session]
+  )
   useEffect(() => {
     router.events.on('routeChangeStart', trackPage)
     return () => {
@@ -63,10 +67,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           <script defer data-domain="praxisco.us" src="https://plausible.io/js/plausible.js" />
         )}
       </Head>
-      <Recoil.RecoilRoot>
-        <Component {...pageProps} />
-        <AdminDevTools />
-      </Recoil.RecoilRoot>
+      <Wrapper apiKey={VITE_GOOGLE_MAPS_API_KEY}>
+        <Recoil.RecoilRoot>
+          <Component {...pageProps} />
+          <AdminDevTools />
+        </Recoil.RecoilRoot>
+      </Wrapper>
     </>
   )
 }

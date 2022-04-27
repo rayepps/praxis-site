@@ -10,8 +10,8 @@ import {
 } from 'react-icons/hi'
 import { useFetch } from 'src/hooks'
 import api from 'src/api'
-import * as t from '../../types'
-import EventGrid from '../ui/EventGrid'
+import * as t from '../types'
+import EventGrid from '../components/ui/EventGrid'
 import EventDetailModal from 'src/components/ui/EventDetailModal'
 
 export default function RecentlyPublishedScene({ events }: { events: t.Event[] }) {

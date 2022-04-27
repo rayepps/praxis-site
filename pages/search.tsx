@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Footer from '../src/components/ui/Footer'
-import Header from '../src/components/ui/Header'
-import SearchScene from '../src/components/scenes/Search'
+import Footer from 'src/components/ui/Footer'
+import Header from 'src/components/ui/Header'
+import SearchScene from 'src/scenes/Search'
 import MarketingPrompts from 'src/components/MarketingPrompts'
 import Meta from 'src/Meta'
 

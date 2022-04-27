@@ -8,8 +8,8 @@ export type Dict<T> = { [key: string]: T }
 
 export type TrainingType = 'tactical' | 'medical' | 'survival'
 
-export type EventSearchOrder = 'date:asc' | 'date:desc' | 'price:asc' | 'price:desc'
-export type TrainingSearchOrder = 'price:asc' | 'price:desc'
+export type EventSearchOrder = 'date:asc' | 'date:desc' | 'price:asc' | 'price:desc' | 'created-at:asc' | 'created-at:desc'
+export type TrainingSearchOrder = 'price:asc' | 'price:desc' | 'created-at:asc' | 'created-at:desc'
 export type EventSearchFilterFields = 'company' | 'date' | 'tags' | 'type' | 'state'
 
 export type PriceUnit = 'per_training' | 'per_hour'
@@ -17,6 +17,17 @@ export type PriceUnit = 'per_training' | 'per_hour'
 export type UnitOfTime = 'millisecond' | 'milliseconds' | 'second' | 'seconds' | 'minute' | 'minutes' | 'hour' | 'hours' | 'day' | 'days'
 export type Duration = `${number} ${UnitOfTime}`
 export type Expiration = Duration | 'never'
+
+export type UserRole = 'user' | 'admin' | 'admin-observer'
+
+export interface User {
+  id: string
+  email: string
+  createdAt: number
+  fullName: string
+  phone: string
+  role: UserRole
+}
 
 export type GeoLocation = {
   longitude: number

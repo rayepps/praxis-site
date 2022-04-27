@@ -9,7 +9,7 @@ import {
   HiOutlineCurrencyDollar,
   HiArrowNarrowRight
 } from 'react-icons/hi'
-import Markdown from '../ui/Markdown'
+import Markdown from '../components/ui/Markdown'
 
 export default function EventDetailScene({ event }: { event: t.Event }) {
   const { training } = event

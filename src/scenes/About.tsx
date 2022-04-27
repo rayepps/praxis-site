@@ -9,7 +9,7 @@ import {
 } from 'react-icons/hi'
 import { useFetch } from 'src/hooks'
 import api from 'src/api'
-import * as t from '../../types'
+import * as t from '../types'
 
 export default function AboutScene() {
   return (

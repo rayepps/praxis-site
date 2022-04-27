@@ -50,6 +50,7 @@ export const skipAnalytics = localStorageItem<boolean>('skip-analytics.v2', fals
 export const session = localStorageItem<t.LocalSession | null>('session.local.v2', null)
 export const abstract = localStorageItem<t.AbstractData | null>('abstract.v2', null, '15 minutes')
 export const geolocation = localStorageItem<t.GeoLocation | null>('geolocation.v2', null, '15 minutes')
+export const token = localStorageItem<string | null>('token.v2', null)
 
 export default {
   isAdmin,
@@ -57,5 +58,6 @@ export default {
   skipAnalytics,
   session,
   abstract,
-  geolocation
+  geolocation,
+  token
 }

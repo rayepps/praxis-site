@@ -1,11 +1,11 @@
 import type { NextPage, GetServerSideProps } from 'next'
 import Head from 'next/head'
-import Footer from '../../src/components/ui/Footer'
-import Header from '../../src/components/ui/Header'
-import * as t from '../../src/types'
-import api from '../../src/api'
+import Footer from 'src/components/ui/Footer'
+import Header from 'src/components/ui/Header'
+import * as t from 'src/types'
+import api from 'src/api'
 import Meta from 'src/Meta'
-import EventDetailScene from 'src/components/scenes/EventDetail'
+import EventDetailScene from 'src/scenes/EventDetail'
 
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
   const slug = (context.params?.['slug'] as string) ?? ''

@@ -32,7 +32,7 @@ export const SearchForm = ({
   const [showDateRange, setShowDateRange] = useState(false)
   const geolocation = useGeolocation()
 
-  const filters = _.objectify(filterFieldList, x => x)
+  const filters = _.objectify(filterFieldList, x => x, () => true)
   useEffect(() => {
     if (!overrides) return
     setOptions({
@@ -252,7 +252,7 @@ export const SearchForm = ({
           <div className="flex flex-row">
             <SelectMenu
               title="Company"
-              options={companies.map(c => ({ label: c.name, value: c.slug }))}
+              options={_.alphabetical(companies, (x) => x.name).map(c => ({ label: c.name, value: c.slug }))}
               selected={options.company}
               filterPlaceholder="Choose company"
               onSelect={item => updateCompany(item.value as string)}

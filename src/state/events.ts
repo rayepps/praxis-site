@@ -68,7 +68,7 @@ export const eventSearchUrlQuerySelector = selector<string>({
     // object to force out those values from the query
     // string.
     const overrides = options.overrides
-      ? _.mapValues(_.objectify(options.overrides, o => o), _v => undefined)
+      ? _.objectify(options.overrides, o => o, () => undefined)
       : {}
     return ComplexQueryString.serialize({
       ...options,

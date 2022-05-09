@@ -49,7 +49,7 @@ export const skipCache = localStorageItem<boolean>('skip-cache.v2', false,)
 export const skipAnalytics = localStorageItem<boolean>('skip-analytics.v2', false,)
 export const session = localStorageItem<t.LocalSession | null>('session.local.v2', null)
 export const abstract = localStorageItem<t.AbstractData | null>('abstract.v2', null, '15 minutes')
-export const geolocation = localStorageItem<t.GeoLocation | null>('geolocation.v2', null, '15 minutes')
+export const geolocation = localStorageItem<{ location: t.GeoLocation; disabled: boolean } | null>('geolocation.v3', null, '30 days')
 export const token = localStorageItem<string | null>('token.v2', null)
 
 export default {

@@ -10,13 +10,14 @@ import { Checkbox, SelectMenu, Popover, Position } from 'evergreen-ui'
 import Recoil from 'recoil'
 import { eventSearchOptionsState } from 'src/state/events'
 import DateRange from 'src/components/ui/DateRange'
+import useGeolocation from 'src/hooks/useGeolocation'
+import ComplexQueryString from 'src/util/ComplexQueryString'
 
 const allFilterFields: t.EventSearchFilterFields[] = ['company', 'date', 'tags', 'type', 'state']
 
 export const SearchForm = ({
   tags,
   companies,
-  geolocation,
   states,
   filters: filterFieldList = allFilterFields,
   overrides
@@ -24,18 +25,12 @@ export const SearchForm = ({
   tags: t.Tag[]
   companies: t.Company[]
   states: Record<t.StateAbbreviation, number>
-  geolocation?: {
-    coords: t.GeoLocation | null
-    error: GeolocationPositionError | null
-    city: string | null
-    state: string | null
-    ready: boolean
-  }
   filters?: t.EventSearchFilterFields[]
   overrides?: Partial<t.EventSearchOptions>
 }) => {
   const [options, setOptions] = Recoil.useRecoilState(eventSearchOptionsState)
   const [showDateRange, setShowDateRange] = useState(false)
+  const geolocation = useGeolocation()
 
   const filters = _.objectify(filterFieldList, x => x)
   useEffect(() => {
@@ -49,7 +44,11 @@ export const SearchForm = ({
 
   useEffect(() => {
     if (!geolocation?.ready) return
+    if (geolocation?.disabled) return
     if (options.state) return
+    const qs = window.location.search
+    const queryState = qs ? ComplexQueryString.deserialize<{ state?: string }>(qs, {}) : null
+    if (queryState?.state) return
     setOptions({
       ...options,
       near: geolocation.coords ?? undefined
@@ -57,6 +56,7 @@ export const SearchForm = ({
   }, [geolocation?.ready, geolocation?.coords])
 
   const clearCurrentLocation = () => {
+    geolocation?.disable()
     setOptions({
       ...options,
       near: undefined,
@@ -66,6 +66,7 @@ export const SearchForm = ({
 
   const applyCurrentLocation = () => {
     if (!geolocation) return
+    geolocation.enable()
     setOptions({
       ...options,
       near: geolocation.coords ?? undefined,
@@ -111,6 +112,7 @@ export const SearchForm = ({
   }
 
   const updateState = (state: string) => {
+    geolocation?.disable()
     setOptions({
       ...options,
       state,
@@ -219,24 +221,24 @@ export const SearchForm = ({
           <div className="flex flex-row justify-between">
             <button
               onClick={() => (options.type !== 'tactical' ? setType('tactical') : clearType())}
-              className={`border-black grow border px-2 py-1 rounded hover:bg-black hover:text-white text-black ${
-                options.type === 'tactical' && 'text-white bg-black'
+              className={`border-black grow border px-2 py-1 rounded ${
+                options.type === 'tactical' ? 'text-white bg-black' : 'hover:bg-black hover:text-white text-black'
               }`}
             >
               Tactical
             </button>
             <button
               onClick={() => (options.type !== 'survival' ? setType('survival') : clearType())}
-              className={`border-black grow mx-2 border px-2 py-1 rounded hover:bg-black hover:text-white text-black ${
-                options.type === 'survival' && 'text-white bg-black'
+              className={`border-black grow mx-2 border px-2 py-1 rounded ${
+                options.type === 'survival' ? 'text-white bg-black' : 'hover:bg-black hover:text-white text-black'
               }`}
             >
               Survival
             </button>
             <button
               onClick={() => (options.type !== 'medical' ? setType('medical') : clearType())}
-              className={`border-black grow border px-2 py-1 rounded hover:bg-black hover:text-white text-black ${
-                options.type === 'medical' && 'text-white bg-black'
+              className={`border-black grow border px-2 py-1 rounded ${
+                options.type === 'medical' ? 'text-white bg-black' : 'hover:bg-black hover:text-white text-black'
               }`}
             >
               Medical
@@ -274,7 +276,7 @@ export const SearchForm = ({
               >
                 <HiOutlineLocationMarker size={22} className="text-white" />
                 <span className="text-white block ml-2">
-                  {geolocation.city}, {geolocation.state}
+                  Current Location
                 </span>
               </button>
             )}
@@ -285,7 +287,7 @@ export const SearchForm = ({
               >
                 <HiOutlineLocationMarker size={22} className="text-black group-hover:text-blue-500" />
                 <span className="text-black block ml-2 group-hover:text-blue-500">
-                  {geolocation.city}, {geolocation.state}
+                  Current Location
                 </span>
               </button>
             )}
@@ -296,7 +298,10 @@ export const SearchForm = ({
           <div className="flex flex-row">
             <SelectMenu
               title="State"
-              options={Object.entries(states).map(([abbv, count]) => ({ label: `${US_STATES[abbv]} (${count})`, value: abbv }))}
+              options={Object.entries(states).map(([abbv, count]) => ({
+                label: `${US_STATES[abbv]} (${count})`,
+                value: abbv
+              }))}
               selected={options.state}
               filterPlaceholder="Choose state"
               onSelect={item => updateState(item.value as string)}

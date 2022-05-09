@@ -1,3 +1,4 @@
+import _ from 'radash'
 import { useState, useEffect, useRef } from 'react'
 import Recoil, { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil'
 import api from 'src/api'
@@ -28,7 +29,7 @@ import np from 'nprogress'
 
 import 'react-date-range/dist/styles.css' // main style file
 import 'react-date-range/dist/theme/default.css' // theme css file
-import useGeolocation from 'src/hooks/useGeolocation'
+import { HiX } from 'react-icons/hi'
 
 export default function SearchScene({
   title,
@@ -61,7 +62,6 @@ export default function SearchScene({
   const setCurrentTrainingId = useSetRecoilState(currentTrainingIdState)
   const currentlySelectedEvent = useRecoilValue(currentEventSelector)
   const currentlySelectedTraining = useRecoilValue(currentTrainingSelector)
-  const geolocation = useGeolocation()
 
   const handleEventClick = useRecoilCallback(({ set, snapshot }) => (e: t.Event) => {
     set(currentEventIdState, e.id)
@@ -104,28 +104,32 @@ export default function SearchScene({
 
   const companies = listCompanies.data?.companies ?? []
   const tags = listTags.data?.tags ?? []
-  const states = listStates.data?.counts ?? {} as Record<t.StateAbbreviation, number>
+  const states = listStates.data?.counts ?? ({} as Record<t.StateAbbreviation, number>)
 
   return (
     <>
-      <div
-        className={`fixed md:!hidden ${
-          filtersOpen ? 'flex' : 'hidden'
-        } top-0 left-0 w-screen h-screen bg-black-opaque z-[9] flex-row`}
-      >
-        <div className="max-w-screen-sm grow h-screen bg-white p-6">
-          <SearchForm states={states} companies={companies} tags={tags} filters={filters} overrides={overrides} geolocation={geolocation} />
-        </div>
-        <div className="grow h-screen" onClick={() => setFiltersOpen(false)}></div>
-      </div>
       <TrainingDetailModal training={currentlySelectedTraining} onClose={closeModal} />
       <EventDetailModal event={currentlySelectedEvent} onClose={closeModal} />
-      <SceneInfo title={title} info={info} thumbnail={thumbnail} className="block md:hidden mt-4 px-4" />
       <div className="w-screen flex flex-row justify-center">
         <div className="items-start flex max-w-screen-3xl grow flex-row">
-          <div className="hidden md:block px-4 pb-4 rounded-xl max-w-xs">
+          <div className="md:px-4 md:pb-4 rounded-xl max-w-xs">
             <SceneInfo title={title} info={info} thumbnail={thumbnail} className="hidden md:block" />
-            <SearchForm states={states} companies={companies} tags={tags} filters={filters} overrides={overrides} geolocation={geolocation} />
+            <div
+              className={`hidden md:block bg-white p-4 pt-8 md:p-0 md:pt-0 ${
+                filtersOpen ? '!block fixed top-0 left-0 w-screen h-screen z-[9]' : ''
+              }`}
+            >
+              <SearchForm
+                states={states}
+                companies={companies}
+                tags={tags}
+                filters={filters}
+                overrides={overrides}
+              />
+              <button className={`p-2 top-2 right-2 fixed hidden ${filtersOpen ? '!block' : ''}`} onClick={_.partial(setFiltersOpen, false)}>
+                <HiX size={24} className={`text-slate-800`} />
+              </button>
+            </div>
           </div>
           <div className="grow px-4 flex flex-col w-full">
             <SummaryBar onToggleFilters={toggleFilters} />
@@ -180,8 +184,18 @@ const SceneInfo = ({
         </div>
       )}
       <div className="bg-slate-50 rounded-xl p-4 mb-6">
-        {title && (<h1 className="font-bold text-3xl mb-2">{title}</h1>)}
-        {!title && (<h1 className="font-bold text-3xl mb-2">Tactical<br />Survival<br />&amp; Medical<br/>Training</h1>)}
+        {title && <h1 className="font-bold text-3xl mb-2">{title}</h1>}
+        {!title && (
+          <h1 className="font-bold text-3xl mb-2">
+            Tactical
+            <br />
+            Survival
+            <br />
+            &amp; Medical
+            <br />
+            Training
+          </h1>
+        )}
         <p className="text-sm max-w-prose">
           {info ??
             `

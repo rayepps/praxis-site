@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { KeyboardEventHandler, useState } from 'react'
 import Link from 'next/link'
 import {
   HiOutlineLocationMarker,
@@ -42,6 +42,12 @@ export default function AdminLoginScene() {
     router.push('/hq/dashboard')
   }
 
+  const submitHandler = form.createHandler(submit)
+
+  const handleKeyUp: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.key === 'Enter') submitHandler()
+  }
+
   return (
     <div className="flex flex-row items-center justify-center h-screen bg-slate-50">
       <div className="bg-white p-8 my-20 rounded-xl w-full max-w-md">
@@ -61,7 +67,8 @@ export default function AdminLoginScene() {
           <input 
             className="border border-black rounded p-2 w-full"
             disabled={loginRequest.loading}
-            placeholder="**********" 
+            placeholder="**********"
+            onKeyUp={handleKeyUp}
             {...form.register('password')}
           />
           {form.errors.password?.message && (
@@ -71,7 +78,7 @@ export default function AdminLoginScene() {
         <button
           className="w-full bg-black text-white py-2 rounded" 
           disabled={loginRequest.loading}
-          onClick={form.createHandler(submit)}
+          onClick={submitHandler}
         >
           Login
         </button>

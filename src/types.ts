@@ -73,10 +73,10 @@ export interface Location {
 export interface Asset {
   id: string
   url: string
-  size: number
-  fileName: string
-  width: number
-  height: number
+  size?: number
+  fileName?: string
+  width?: number
+  height?: number
 }
 
 export interface RichText {

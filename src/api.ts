@@ -181,7 +181,20 @@ const createApi = () => {
         module: 'locations',
         function: 'list-state-event-counts'
       })
-    }
+    },
+    assets: {
+      authenticate: endpoint<
+        {},
+        {
+          token: string
+          expire: number
+          signature: string
+        }
+      >({
+        module: 'assets',
+        function: 'authenticate'
+      })
+    },
   }
 }
 

@@ -15,7 +15,9 @@ import {
   HiX,
   HiOutlineCalendar,
   HiOutlineExclamation,
-  HiOutlineMap
+  HiOutlineMap,
+  HiPhotograph,
+  HiOutlinePhotograph
 } from 'react-icons/hi'
 import { useFetch } from 'src/hooks'
 import api from 'src/api'
@@ -31,6 +33,8 @@ import { DateRange as ReactDateRange } from 'react-date-range'
 
 import 'react-date-range/dist/styles.css' // main style file
 import 'react-date-range/dist/theme/default.css' // theme css file
+import MultiImageUpload from 'src/components/ui/MultiImageUpload'
+import UrlImageUpload from 'src/components/ui/UrlImageUpload'
 
 type EditorField = 'training' | 'start-date' | 'location' | 'link' | 'sold-out' | 'images'
 
@@ -89,7 +93,14 @@ export default function AdminEventDetailScene({ eventId }: { eventId: string }) 
     setEvent({
       ...event,
       startDate: value.start.toISOString(),
-      endDate: value.end.toISOString(),
+      endDate: value.end.toISOString()
+    })
+  }
+  const addImages = (images: t.Asset[]) => {
+    if (!event) return
+    setEvent({
+      ...event,
+      images: [...event.images, ...images]
     })
   }
   return (
@@ -114,6 +125,7 @@ export default function AdminEventDetailScene({ eventId }: { eventId: string }) 
             onTrainingSelect={setTraining}
             onLocationSelect={setLocation}
             onDateSelect={setDates}
+            onImagesAdded={addImages}
           />
         </div>
       </div>
@@ -138,6 +150,7 @@ const EventForm = ({
   const onEditTraining = () => onFocusChange?.('training')
   const onEditStartDate = () => onFocusChange?.('start-date')
   const onEditLocation = () => onFocusChange?.('location')
+  const onEditImages = () => onFocusChange?.('images')
   const onSoldOutClick = () => {
     onEventChange?.({ ...event, soldOut: !event.soldOut })
   }
@@ -194,9 +207,7 @@ const EventForm = ({
         >
           <div className="grow">
             <span className="block uppercase font-black text-slate-400 text-xs">Date</span>
-            <span className="text-slate-900 text-xl block font-bold">
-              {fmtDates()}
-            </span>
+            <span className="text-slate-900 text-xl block font-bold">{fmtDates()}</span>
           </div>
           <div>
             <HiOutlineCalendar size={24} className="text-slate-900" />
@@ -236,6 +247,22 @@ const EventForm = ({
           <HiOutlineMap size={24} className="text-slate-900" />
         </div>
       </div>
+      <div
+        onClick={onEditImages}
+        className="bg-slate-50 mt-4 rounded-xl p-4 flex flex-row items-center hover:cursor-pointer hover:bg-slate-100"
+      >
+        <div className="grow">
+          <span className="block uppercase font-black text-slate-400 text-xs">Images</span>
+          <div>
+            {event.images.map(asset => (
+              <img key={asset.id} src={asset.url} />
+            ))}
+          </div>
+        </div>
+        <div>
+          <HiOutlinePhotograph size={24} className="text-slate-900" />
+        </div>
+      </div>
     </div>
   )
 }
@@ -248,7 +275,8 @@ const EventEditorAssistant = ({
   onTrainingSelect,
   onCreateTraining,
   onLocationSelect,
-  onDateSelect
+  onDateSelect,
+  onImagesAdded
 }: {
   event: t.Event | null
   loading: boolean
@@ -258,9 +286,12 @@ const EventEditorAssistant = ({
   onCreateTraining?: () => void
   onLocationSelect?: (newLocation: MapLocation) => void
   onDateSelect?: (newDates: { start: Date; end: Date }) => void
+  onImagesAdded?: (newImages: t.Asset[]) => void
 }) => {
+  console.log('x--> EVENT:')
+  console.log(event);
   const [state, setState] = useState<{
-    trainingsFilterText: string,
+    trainingsFilterText: string
     locationQueryText: string
   }>({
     trainingsFilterText: '',
@@ -319,7 +350,8 @@ const EventEditorAssistant = ({
     onLocationSelect?.({
       latitude: geometry.location.lat() ?? 0,
       longitude: geometry.location.lng() ?? 0,
-      city, state: stateAbbrev
+      city,
+      state: stateAbbrev
     })
   }
 
@@ -333,7 +365,7 @@ const EventEditorAssistant = ({
     onDateSelect?.({
       start: ranges.selection.startDate,
       end: ranges.selection.endDate
-    }) 
+    })
   }
 
   const trainingList = focus === 'training' ? listTrainings() : []
@@ -400,11 +432,13 @@ const EventEditorAssistant = ({
             <ReactDateRange
               minDate={new Date()}
               // ranges={ranges}
-              ranges={[{
-                startDate: new Date(event.startDate ?? undefined),
-                endDate: event.endDate ? new Date(event.endDate) : undefined,
-                key: 'selection'
-              }]}
+              ranges={[
+                {
+                  startDate: new Date(event.startDate ?? undefined),
+                  endDate: event.endDate ? new Date(event.endDate) : undefined,
+                  key: 'selection'
+                }
+              ]}
               onChange={handleDateChange as any}
               // onChange={handleRangeSelect as any}
               moveRangeOnFirstSelection={false}
@@ -447,6 +481,25 @@ const EventEditorAssistant = ({
                   : null
               }
             />
+          </div>
+        </div>
+      )}
+      {focus === 'images' && (
+        <div>
+          <div className="flex flex-row items-center">
+            <h4 className="font-bold text-xl">Images</h4>
+          </div>
+          <div className="mb-10">
+            <span className="font-semibold">Link</span>
+            <UrlImageUpload preview={false} onUpload={(asset) => onImagesAdded?.([asset])} />
+          </div>
+          <div className="mb-10">
+            <span className="font-semibold">Upload</span>
+            <MultiImageUpload preview={false} onUpload={onImagesAdded} />
+          </div>
+          <div className="mb-10">
+            <span className="font-semibold">Related</span>
+            
           </div>
         </div>
       )}
